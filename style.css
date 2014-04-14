@@ -790,19 +790,21 @@ body {
 /* Portafolio Sections general Styles */
 .portfolioSection,
 #contacto {
-  min-height: 433px;
-  padding: 43px 64px;
-  margin: 55px auto;
-  background: #fff;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -ms-border-radius: 5px;
-  border-radius: 5px;
+    min-height: 433px;
+    width: 92%;
+    padding: 43px 4%;
+    margin: 55px auto;
+    background: #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -ms-border-radius: 5px;
+    border-radius: 5px;
+    border-bottom: 2px solid #DFDFDF;
+    max-width: 1000px;
 }
 .portfolioSection {
   min-height: 2000px;
-  padding-left: 33px;
 }
 .portfolioHeader {
   overflow: hidden;

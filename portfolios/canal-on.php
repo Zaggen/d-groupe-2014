@@ -6,7 +6,7 @@
                 everything you need to know about advanced JavaScript</p></div>
         <div class="grid_5">
             <ul class="portfolioBtns navigator">
-                <li><a href="/portafolio/on/kukaramakara" class="portfolioBtn portfolioPlaceBtn kukaramakaraBtn"></a></li>
+                <li><a href="/portafolio/on/kukaramakara" class="portfolioBtn portfolioPlaceBtn kukaramakaraBtn selected"></a></li>
                 <li><a href="/portafolio/on/lussac" class="portfolioBtn portfolioPlaceBtn lussacBtn"></a></li>
                 <li><a href="/portafolio/on/sixxtina" class="portfolioBtn portfolioPlaceBtn sixxtinaBtn"></a></li>
                 <li><a href="/portafolio/on/delaire" class="portfolioBtn portfolioPlaceBtn delaireBtn"></a></li>

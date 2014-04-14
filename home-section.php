@@ -13,10 +13,10 @@
                             <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
                             <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
                             <ul class="slider">
-                                <li><a href="/portafolio/on/kukaramakara" class="route"><img src="<?php echo THEME_PATH ?>imgs/lussac.jpg"/></a></li>
-                                <li><a href="/portafolio/on/lussac" class="route"><img src="<?php echo THEME_PATH ?>imgs/lussac.jpg"/></a></li>
-                                <li><a href="/portafolio/on/sixxtina" class="route"><img src="<?php echo THEME_PATH ?>imgs/lussac.jpg"/></a></li>
-                                <li><a href="/portafolio/on/delaire" class="route"><img src="<?php echo THEME_PATH ?>imgs/lussac.jpg"/></a></li>
+                                <li><a href="/portafolio/on/kukaramakara" class="route"><img src="<?php stylesheetUri(); ?>imgs/lussac.jpg"/></a></li>
+                                <li><a href="/portafolio/on/lussac" class="route"><img src="<?php stylesheetUri(); ?>imgs/lussac.jpg"/></a></li>
+                                <li><a href="/portafolio/on/sixxtina" class="route"><img src="<?php stylesheetUri(); ?>imgs/lussac.jpg"/></a></li>
+                                <li><a href="/portafolio/on/delaire" class="route"><img src="<?php stylesheetUri(); ?>imgs/lussac.jpg"/></a></li>
                             </ul>
                         </div>
                     </div>
@@ -26,9 +26,9 @@
                             <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
                             <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
                             <ul class="slider">
-                                <li><a href="/portafolio/musical" class="route"><img src="<?php echo THEME_PATH ?>imgs/musical.jpg"/></a></li>
-                                <li><a href="/portafolio/musical" class="route"><img src="<?php echo THEME_PATH ?>imgs/musical.jpg"/></a></li>
-                                <li><a href="/portafolio/musical" class="route"><img src="<?php echo THEME_PATH ?>imgs/musical.jpg"/></a></li>
+                                <li><a href="/portafolio/musical" class="route"><img src="<?php stylesheetUri(); ?>imgs/musical.jpg"/></a></li>
+                                <li><a href="/portafolio/musical" class="route"><img src="<?php stylesheetUri(); ?>imgs/musical.jpg"/></a></li>
+                                <li><a href="/portafolio/musical" class="route"><img src="<?php stylesheetUri(); ?>imgs/musical.jpg"/></a></li>
                             </ul>
                         </div>
                     </div>
@@ -38,9 +38,9 @@
                             <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
                             <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
                             <ul class="slider">
-                                <li><a href="/portafolio/corporativo" class="route"><img src="<?php echo THEME_PATH ?>imgs/corporativo.jpg"/></a></li>
-                                <li><a href="/portafolio/corporativo" class="route"><img src="<?php echo THEME_PATH ?>imgs/corporativo.jpg"/></a></li>
-                                <li><a href="/portafolio/corporativo" class="route"><img src="<?php echo THEME_PATH ?>imgs/corporativo.jpg"/></a></li>
+                                <li><a href="/portafolio/corporativo" class="route"><img src="<?php stylesheetUri(); ?>imgs/corporativo.jpg"/></a></li>
+                                <li><a href="/portafolio/corporativo" class="route"><img src="<?php stylesheetUri(); ?>imgs/corporativo.jpg"/></a></li>
+                                <li><a href="/portafolio/corporativo" class="route"><img src="<?php stylesheetUri(); ?>imgs/corporativo.jpg"/></a></li>
                             </ul>
                         </div>
                     </div>
@@ -50,9 +50,9 @@
                             <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
                             <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
                             <ul class="slider">
-                                <li><a href="/portafolio/eventos" class="route"><img src="<?php echo THEME_PATH ?>imgs/eventos.jpg"/></a></li>
-                                <li><a href="/portafolio/eventos" class="route"><img src="<?php echo THEME_PATH ?>imgs/eventos.jpg"/></a></li>
-                                <li><a href="/portafolio/eventos"><img src="<?php echo THEME_PATH ?>imgs/eventos.jpg"/></a></li>
+                                <li><a href="/portafolio/eventos" class="route"><img src="<?php stylesheetUri(); ?>imgs/eventos.jpg"/></a></li>
+                                <li><a href="/portafolio/eventos" class="route"><img src="<?php stylesheetUri(); ?>imgs/eventos.jpg"/></a></li>
+                                <li><a href="/portafolio/eventos"><img src="<?php stylesheetUri(); ?>imgs/eventos.jpg"/></a></li>
                             </ul>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                     <div class="grid_3 socialBlock"><h3 class="twitterUser"><a
                                 href="https://twitter.com/kukaramedellin">@kukaramakara</a></h3>
 
-                        <h2 class="twitterBlockTitle">Ultimos Twitts</h2><a href="https://twitter.com/kukaramedellin"  data-widget-id="450562932225490944" height="404" data-chrome="noheader" class="twitter-timeline">Tweets by @Sixttina</a>
+                        <h4 class="twitterBlockTitle">Ultimos Twitts</h4><a href="https://twitter.com/kukaramedellin"  data-widget-id="450562932225490944" height="404" data-chrome="noheader" class="twitter-timeline">Tweets by @Sixttina</a>
                         <script>!function (d, s, id) {
                                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                                 if (!d.getElementById(id)) {
@@ -87,7 +87,7 @@
                     <div class="grid_3 socialBlock"><h3 class="twitterUser"><a href="https://twitter.com/Sixttina">@sixxtina</a>
                         </h3>
 
-                        <h2 class="twitterBlockTitle">Ultimos Twitts</h2><a href="https://twitter.com/Sixttina" data-widget-id="450559990533599234"  height="404" data-chrome="noheader" class="twitter-timeline">Tweets by @Sixttina</a>
+                        <h4 class="twitterBlockTitle">Ultimos Twitts</h4><a href="https://twitter.com/Sixttina" data-widget-id="450559990533599234"  height="395" data-chrome="noheader" class="twitter-timeline">Tweets by @Sixttina</a>
                         <script>!function (d, s, id) {
                                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                                 if (!d.getElementById(id)) {
@@ -107,7 +107,7 @@
                     <div class="grid_3 socialBlock"><h3 class="twitterUser"><a href="https://twitter.com/DelaireSky">@delaire</a>
                         </h3>
 
-                        <h2 class="twitterBlockTitle">Ultimos Twitts</h2><a href="https://twitter.com/DelaireSky" data-widget-id="450564183168262144"  height="404" data-chrome="noheader" class="twitter-timeline">Tweets by @DelaireSky</a>
+                        <h4 class="twitterBlockTitle">Ultimos Twitts</h4><a href="https://twitter.com/DelaireSky" data-widget-id="450564183168262144"  height="395" data-chrome="noheader" class="twitter-timeline">Tweets by @DelaireSky</a>
                         <script>!function (d, s, id) {
                                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                                 if (!d.getElementById(id)) {
@@ -127,7 +127,7 @@
                     <div class="grid_3 socialBlock"><h3 class="twitterUser"><a href="https://twitter.com/Lussacpark10">
                                 @lussac</a></h3>
 
-                        <h2 class="twitterBlockTitle">Ultimos Twitts</h2><a href="https://twitter.com/Lussacpark10"  data-widget-id="450564807695945728" height="404" data-chrome="noheader" class="twitter-timeline">Tweets by @Lussacpark10</a>
+                        <h4 class="twitterBlockTitle">Ultimos Twitts</h4><a href="https://twitter.com/Lussacpark10"  data-widget-id="450564807695945728" height="395" data-chrome="noheader" class="twitter-timeline">Tweets by @Lussacpark10</a>
                         <script>!function (d, s, id) {
                                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                                 if (!d.getElementById(id)) {

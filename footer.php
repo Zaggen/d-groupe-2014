@@ -8,10 +8,10 @@
 </footer>
 </body>
 <?php wp_footer() ?>
-<script src="<?php echo THEME_PATH ?>js/underscore-min.js"></script>
-<script src="<?php echo THEME_PATH ?>js/jquery.js"></script>
-<script src="<?php echo THEME_PATH ?>js/backbone.js"></script>
-<script src="<?php echo THEME_PATH ?>js/drag-slider.js"></script>
-<script src="<?php echo THEME_PATH ?>js/jquery.colorbox-min.js"></script>
-<script src="<?php echo THEME_PATH ?>js/d-groupe.js"></script>
+<script src="<?php stylesheetUri(); ?>js/underscore-min.js"></script>
+<script src="<?php stylesheetUri(); ?>js/jquery.js"></script>
+<script src="<?php stylesheetUri(); ?>js/backbone.js"></script>
+<script src="<?php stylesheetUri(); ?>js/drag-slider.js"></script>
+<script src="<?php stylesheetUri(); ?>js/jquery.colorbox-min.js"></script>
+<script src="<?php stylesheetUri(); ?>js/d-groupe.js"></script>
 </html>

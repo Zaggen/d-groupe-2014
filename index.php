@@ -1,5 +1,4 @@
 <?php
-define('THEME_PATH', get_template_directory_uri().'/');
 get_header();
 include_once('home-section.php');
 include_once('portfolios/canal-on.php');

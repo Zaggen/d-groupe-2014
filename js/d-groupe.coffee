@@ -7,10 +7,9 @@ root.template = (id)->
 
 
 # Used to filter each ajax json request for the backbone models
-baseFolder = window.location.pathname.replace('/','').split('/')[0]
+baseFolder = window.location.pathname.replace('/','').split('/')[0] # Also used as the backbone history root
 rootUrl = window.location.protocol + "//" + window.location.host + "/" + baseFolder;
 $.ajaxPrefilter (options)->
-  #rootUrl = 'http://zozial.co/dgroupe2'
   options.url = rootUrl + options.url
   false
 

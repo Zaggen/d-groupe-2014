@@ -10,7 +10,7 @@
 
   Slider = (function() {
     function Slider(sliderId, config) {
-      var _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var sliderItemWidth, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       this.sliderId = sliderId;
       if (config == null) {
         config = {};
@@ -29,9 +29,10 @@
       this.viewPortWidth = this.$sliderViewport.width();
       this.elementsQ = this.$sliderItems.length;
       this.sliderWidth = this.elementsQ * 100;
+      sliderItemWidth = 100 / this.elementsQ;
       this.rightLimit = (this.viewPortWidth * this.elementsQ) - this.viewPortWidth;
       this.$slider.css('width', "" + this.sliderWidth + "%");
-      this.$sliderItems.css('width', "" + this.viewPortWidth + "px");
+      this.$sliderItems.css('width', "" + sliderItemWidth + "%");
       this.settings = {
         viewportMaxWidth: (_ref = config.viewportMaxWidth) != null ? _ref : 1000,
         viewportMaxHeight: (_ref1 = config.viewportMaxHeight) != null ? _ref1 : 500,
@@ -71,11 +72,15 @@
       if (this.settings.draggable) {
         this.$sliderViewport.mousedown((function(_this) {
           return function(e) {
+            e.stopPropagation();
+            e.preventDefault();
             return _this.dragStart(e);
           };
         })(this));
         $(document).mouseup((function(_this) {
           return function(e) {
+            e.stopPropagation();
+            e.preventDefault();
             return _this.dragEnd(e);
           };
         })(this));
@@ -84,8 +89,6 @@
 
     Slider.prototype.dragStart = function(e) {
       var $el, startX;
-      e.stopPropagation();
-      e.preventDefault();
       $el = $(e.currentTarget);
       this.dragStartX = e.pageX;
       startX = e.pageX;
@@ -131,8 +134,6 @@
 
     Slider.prototype.dragEnd = function(e) {
       var minToAction, offsetPercentage, offsetX, tempIndex;
-      e.stopPropagation();
-      e.preventDefault();
       if (!((this.draggedEl == null) || this.clicked)) {
         if (this.hasLimitClass) {
           this.$sliderViewport.removeClass('onLeftLimit onRightLimit');
@@ -213,14 +214,14 @@
         }
       }
       console.log('index:' + this.index);
-      this.slideToPos = -1 * (this.index * this.viewPortWidth);
+      this.slideToPos = -1 * (this.index * 100);
       if (this.settings.navigator) {
         console.log(this.$sliderNavBtns.get(0));
         this.$sliderNavBtns.removeClass('selected');
         $(this.$sliderNavBtns[this.index]).addClass('selected');
       }
       this.$slider.stop().animate({
-        'left': this.slideToPos + 'px'
+        'left': this.slideToPos + '%'
       }, this.settings.duration);
       if (this.settings.emmitEvents) {
         return $.event.trigger('onSlide', [this.index, this.sliderId]);

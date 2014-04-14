@@ -20,9 +20,10 @@ class Slider
     @viewPortWidth = @$sliderViewport.width()
     @elementsQ = @$sliderItems.length
     @sliderWidth = @elementsQ * 100
+    sliderItemWidth = 100 / @elementsQ
     @rightLimit = (@viewPortWidth * @elementsQ) - @viewPortWidth #
     @$slider.css 'width', "#{@sliderWidth}%"
-    @$sliderItems.css 'width', "#{@viewPortWidth}px"
+    @$sliderItems.css 'width', "#{sliderItemWidth}%"
 
     @settings =
       viewportMaxWidth:  config.viewportMaxWidth ? 1000
@@ -63,6 +64,8 @@ class Slider
     ## Drag
     if @settings.draggable
       @$sliderViewport.mousedown (e)=>
+        e.stopPropagation()
+        e.preventDefault()
         @dragStart(e)
 
       # Removes mousemove ev when the mouse is up anywhere in
@@ -70,12 +73,13 @@ class Slider
       # if @dragStartX means the current object called by the handler
       # did not started the mousedown event so we skip it
 
-      $(document).mouseup (e)=> @dragEnd(e)
+      $(document).mouseup (e)=>
+        e.stopPropagation()
+        e.preventDefault()
+        @dragEnd(e)
 
 
   dragStart: (e)->
-    e.stopPropagation()
-    e.preventDefault()
     $el = $ e.currentTarget
     @dragStartX = e.pageX
     startX = e.pageX
@@ -124,8 +128,6 @@ class Slider
       null
 
   dragEnd: (e)->
-    e.stopPropagation()
-    e.preventDefault()
     unless not @draggedEl? or @clicked
       if @hasLimitClass
          @$sliderViewport.removeClass('onLeftLimit onRightLimit')
@@ -203,13 +205,13 @@ class Slider
         return false
 
     console.log 'index:' + @index
-    @slideToPos = -1 * (@index * @viewPortWidth)
+    @slideToPos = -1 * (@index * 100)
     if(@settings.navigator)
       console.log @$sliderNavBtns.get(0)
       @$sliderNavBtns.removeClass 'selected'
       $(@$sliderNavBtns[@index]).addClass 'selected'
 
-    @$slider.stop().animate({'left': @slideToPos + 'px'}, @settings.duration)
+    @$slider.stop().animate({'left': @slideToPos + '%'}, @settings.duration)
     if(@settings.emmitEvents)
       $.event.trigger('onSlide', [@index, @sliderId]);
 

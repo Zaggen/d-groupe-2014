@@ -234,14 +234,12 @@ $ ->
   sliders.eventos = new Slider 'frameEventsSldr', {}
   # Sections Sliders
   sliders.onSection = new Slider 'onSectionSldr' ,
-    draggable: no
     emmitEvents: yes
     navigator: yes
     navigatorInParent: yes
     navigatorEvents: no
 
   sliders.musicSection = new Slider 'musicSectionSldr' ,
-      draggable: no
       emmitEvents: yes
       navigator: yes
       navigatorInParent: yes
@@ -249,7 +247,6 @@ $ ->
 
 
   sliders.eventSection = new Slider 'eventSectionSldr' ,
-    draggable: no
     emmitEvents: yes
     navigator: yes
     navigatorInParent: yes
@@ -257,7 +254,6 @@ $ ->
 
 
   sliders.corpSection = new Slider 'corpSectionSldr' ,
-    draggable: no
     emmitEvents: yes
     navigator: yes
     navigatorInParent: yes

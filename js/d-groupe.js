@@ -139,6 +139,7 @@
       $parent.empty();
       this.$el.empty();
       nodes = [];
+      console.log(this.collection.toJSON());
       this.collection.each((function(_this) {
         return function(news) {
           var newsView;

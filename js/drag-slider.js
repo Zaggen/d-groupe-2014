@@ -248,28 +248,24 @@
     sliders.canalCorp = new Slider('frameCorpSldr', {});
     sliders.eventos = new Slider('frameEventsSldr', {});
     sliders.onSection = new Slider('onSectionSldr', {
-      draggable: false,
       emmitEvents: true,
       navigator: true,
       navigatorInParent: true,
       navigatorEvents: false
     });
     sliders.musicSection = new Slider('musicSectionSldr', {
-      draggable: false,
       emmitEvents: true,
       navigator: true,
       navigatorInParent: true,
       navigatorEvents: false
     });
     sliders.eventSection = new Slider('eventSectionSldr', {
-      draggable: false,
       emmitEvents: true,
       navigator: true,
       navigatorInParent: true,
       navigatorEvents: false
     });
     sliders.corpSection = new Slider('corpSectionSldr', {
-      draggable: false,
       emmitEvents: true,
       navigator: true,
       navigatorInParent: true,

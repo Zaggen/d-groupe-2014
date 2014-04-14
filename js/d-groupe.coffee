@@ -52,7 +52,7 @@ class App.Views.NewsCollection extends Backbone.View
 
   yeldAdd: =>
     console.log 'add was made'
-  #console.log @render().el
+    #console.log @render().el
 
   fetchCollection: (page = 1, fetchCurrent = false)->
     @$el.addClass('pointEightOpcty')
@@ -79,6 +79,8 @@ class App.Views.NewsCollection extends Backbone.View
     @$el.empty()
 
     nodes = []
+
+    console.log @collection.toJSON()
 
     @collection.each (news)=>
       newsView = new App.Views.News model: news

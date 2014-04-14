@@ -102,4 +102,5 @@ if (!is_admin()) {
     wp_deregister_script('jquery');
 }
 
+add_image_size('newsThumb', 182, 141, true);
 add_image_size('galleryThumb', 142, 142, true);

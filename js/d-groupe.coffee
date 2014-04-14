@@ -129,10 +129,8 @@ class App.Views.pagination extends  Backbone.View
   el: '#newsNavi'
 
   initialize: ->
-    @pageQ = 3
+    @pageQ = @$el.children().length
     @render()
-
-  getPageQ: ->
 
 
   render: ->

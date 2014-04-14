@@ -231,11 +231,9 @@
     pagination.prototype.el = '#newsNavi';
 
     pagination.prototype.initialize = function() {
-      this.pageQ = 3;
+      this.pageQ = this.$el.children().length;
       return this.render();
     };
-
-    pagination.prototype.getPageQ = function() {};
 
     pagination.prototype.render = function() {
       var nodes, num, pageNum, _i, _ref;

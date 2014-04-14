@@ -19,23 +19,26 @@
             </a>
         </div>
         <span class="publishDate">
-                            <%= date %>
-                         </span>
+            <%= date %>
+        </span>
         <p>
-                            <%= content %>
-                         </p>
+            <%= content %>
+        </p>
     </script>
     <div id="newsWrapper">
         <ul id="newsFeed"></ul>
     </div>
     <input type="button" value="Regresar a la lista" id="backToNewsList" class="backToList hidden"/>
     <ul id="newsNavi" class="pageNavi">
-        <li><<</li>
         <li class="selectedNav">1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-        <li>>></li>
+        <?php
+        $newsQ = wp_count_posts('noticia');
+        $publishedNewsQ = $newsQ->publish;
+        $newsPerPage = 3;
+        $pageQ = ceil($publishedNewsQ / $newsPerPage);
+        for($i = 2; $i <= $pageQ; $i++):
+            echo "<li>{$i}</li>";
+        endfor;
+        ?>
     </ul>
 </div>

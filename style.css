@@ -323,8 +323,6 @@ body {
 }
 /* Home Styles */
 #mainSlider {
-  background: url("imgs/bg.png") no-repeat;
-  background-position: 62% 4%;
   height: 740px;
 }
 .sectionFrames {
@@ -1225,4 +1223,11 @@ ul.portfolioBtns li {
 .cboxIE #cboxMiddleLeft,
 .cboxIE #cboxMiddleRight {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
+}
+
+@media all and (min-width: 1000px) {
+    #mainSlider {
+        background: url("imgs/bg.png") no-repeat;
+        background-position: 62% 4%;
+    }
 }

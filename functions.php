@@ -26,25 +26,17 @@ function getYtEmbedUrl($ytLink)
     return preg_replace($search, $replace, $ytLink);
 }
 
-function getYtThumb($ytLink)
-{
+function getYtThumb($ytLink){
     parse_str(parse_url($ytLink, PHP_URL_QUERY), $urlSegments);
     return "http://img.youtube.com/vi/{$urlSegments['v']}/2.jpg";
 }
 
-function getTemplate($templateName)
-{
-    $templatePath = 'portfolios/templates/' . $templateName . '.php';
+function placeTemplate($templateName,  $data = array(), $args = array()) {
+    $templatePath = 'templates/' . $templateName . '.php';
     return include($templatePath);
 }
 
-function placeTemplate($templateName, $data = array(), $args = array())
-{
-    $templatePath = 'portfolios/templates/' . $templateName . '.php';
-    include($templatePath);
-}
-
-function createGalleryObj($galleryIdString){
+function createGalleryObj($galleryIdString) {
 
     if ($galleryIdString == '') return false;
 

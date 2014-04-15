@@ -229,14 +229,14 @@ $('.pageNavi li').click (e)->
 
 class App.Routers.Router extends Backbone.Router
   routes:
-    '' : 'home'
-    'redes': 'social'
-    'noticias': 'news'
-    'contacto': 'contact'
-    'portafolio/on(/:slide)': 'onSection'
-    'portafolio/musical(/:slide)': 'musicSection'
-    'portafolio/corporativo(/:slide)': 'corpSection'
-    'portafolio/eventos(/:slide)': 'eventsSection'
+    '(/)' : 'home'
+    'redes(/)': 'social'
+    'noticias(/)': 'news'
+    'contacto(/)': 'contact'
+    'portafolio/on(/:slide)(/)': 'onSection'
+    'portafolio/musical(/:slide)(/)': 'musicSection'
+    'portafolio/corporativo(/:slide)(/)': 'corpSection'
+    'portafolio/eventos(/:slide)(/)': 'eventsSection'
 
   initialize: ->
 
@@ -280,21 +280,37 @@ class App.Routers.Router extends Backbone.Router
     # allow to trigger functions associated with a route is the path is the same, so we first
     # change the route to the home, which is always visible, and then we trigger our navigate
     linkTarget = window.location.pathname.replace('/' + baseFolder, '')
+    console.log 'linkTarget: ' + linkTarget
     @navigate('/')
     @navigate(linkTarget, yes)
 
   # Method to scroll up/down to a given position in px or to the
   # offset of an element which id matches the current route
-  scrollTo: (scrollPos, removeFromFragment)->
+  scrollTo: (scrollPos, itemToSkip)->
 
+    # In case that scrollPos is a url and not a direct vertical position, we extract the corresponding element id
+    # from the path, by skiping any path specified(only one) in the second argument
     if scrollPos is Backbone.history.fragment
+      pathFragments = scrollPos.split('/').reverse() # We want to start looping in the array fragments from the end
 
-      if typeof removeFromFragment isnt 'undefined' and removeFromFragment?
-        scrollPos = scrollPos.replace("/#{removeFromFragment}", '')
+      for targetId in pathFragments
 
-      targetId = scrollPos.split('/').pop()
+        # We check that the current element of the array (targetId) is neither empty (caused by a trailing slash)
+        # or the item that we want to skip, when we find it, thats our element id.
+        if(targetId isnt itemToSkip and targetId isnt '')
+          break
+
       targetEl = $('#' + targetId)
-      scrollPos = targetEl.offset().top - 125
+      navBarOffset = 125
+
+      try
+        scrollPos = targetEl.offset().top - navBarOffset
+      catch e
+        if targetId is ''
+          console.error "targetId can't be empty, verify you are passing the correct arguments and there is no trailing slash in the url"
+        else
+           console.error "'##{targetId}' seems like an invalid id or there is no such element in the dom \n #{e.message}"
+
 
     $('html,body').stop().animate({
       scrollTop: scrollPos
@@ -302,25 +318,30 @@ class App.Routers.Router extends Backbone.Router
 
     null
 
+  # First Scrolls the page to the required section, based on the current route and the slide name
+  # Then Moves the slider to the index setted in the router prefix+'Slides'
+  navigateSection: (slide, prefix)->
+
+    @scrollTo(Backbone.history.fragment, slide)
+
+    if slide?
+
+      try
+        routeKey = "#{prefix}Slides"
+        slidersKey = "#{prefix}Section"
+        index = @[routeKey].indexOf(slide)
+        console.log 'index is ' + index
+        root.sliders[slidersKey].slideTo(index)
+      catch e
+        console.error 'There are no slides defined in the router for this slider. \n' + e.message
+    else
+      console.warn('navigateSection was called with a null slide argument')
+
+    null
+
 
 router = new App.Routers.Router();
 
-navigateSection = (slide, prefix)->
-  router.scrollTo(Backbone.history.fragment, slide)
-
-  if slide?
-    try
-
-      #Move the slider to the index setted in the router prefix+'Slides'
-      routeKey = "#{prefix}Slides"
-      slidersKey = "#{prefix}Section"
-      index = router[routeKey].indexOf(slide)
-      console.log 'index is ' + index
-      root.sliders[slidersKey].slideTo(index)
-    catch e
-      console.error 'There are no slides defined in the router for this slider. \n' + e.message
-  #
-  null
 
 Backbone.history.start
   pushState: true
@@ -344,22 +365,24 @@ $ =>
     null
 
   router.on 'route:onSection' , (slide)->
-    navigateSection(slide, 'on')
+    router.navigateSection(slide, 'on')
 
   router.on 'route:musicSection' , (slide)->
-    navigateSection(slide, 'music')
+    router.navigateSection(slide, 'music')
 
   router.on 'route:corpSection' , (slide)->
-    navigateSection(slide, 'corp')
+    router.navigateSection(slide, 'corp')
 
   router.on 'route:eventsSection' , (slide)->
-    navigateSection(slide, 'event')
+    router.navigateSection(slide, 'event')
 
   router.on 'route:contact' , ->
     router.scrollTo(Backbone.history.fragment)
     null
 
 $(window).load ->
+
+  #Once the page is loaded with a route diferent than home, slide/scroll to the corresponding section
   router.navigateOnLoad()
 
 

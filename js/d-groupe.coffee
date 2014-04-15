@@ -126,16 +126,33 @@ class App.Views.fullNews extends Backbone.View
     newsNavi.$el.addClass('hidden')
     this
 
-# Navigation Views
+# Navigation View
 
 class App.Views.navigation extends Backbone.View
   el: '#NavBar'
 
   initialize: ->
+    @$navItems = @$el.find('a')
+    @$navItems.click (e)=>
+      e.stopPropagation()
+      e.preventDefault()
+      $currentTarget = $(e.currentTarget)
+      linkTarget = $currentTarget.attr('href')
+      @navigate(linkTarget, $currentTarget)
 
+  navigate: (linkTarget, $currentTarget) =>
+    @markAsSelected($currentTarget)
+    try
+      router.navigate(linkTarget, true)
+    catch (e)
+      throw new Error('This method needs a router instance defined named "router"')
 
+  markAsSelected: ($el)=>
+    selectedClass = 'current_page_item'
+    @$navItems.removeClass(selectedClass)
+    $el.addClass(selectedClass)
 
-# Pagination Views
+# Pagination View
 
 class App.Views.pagination extends  Backbone.View
   className: '.pageNavi',
@@ -211,21 +228,6 @@ backToListBtn = new App.Views.ReturnToListBtn {
 }
 
 mainNav = new App.Views.navigation
-###
-$('.pageNavi li').click (e)->
-  page = $(this).index() + 1;
-  $('body').css 'cursor','wait'
-  newsViewCollection.fetchCollection(page)
-  newsCollection.at(0).set
-    title: 'yikes'
-    date: '2 Mayo 2014'
-    content: 'The content has changed so much since you were here'
-    imgSrc: 'imgs/news-dummy2.jpg'
-###
-
-
-# Routes and Navigation
-
 
 class App.Routers.Router extends Backbone.Router
   routes:
@@ -385,8 +387,7 @@ $(window).load ->
   #Once the page is loaded with a route diferent than home, slide/scroll to the corresponding section
   router.navigateOnLoad()
 
-
-# Fb Window behavior - Please refactor into Backbone views
+# Refactor
 
 $('a.route, .portfolioBtn').click (e)->
   e.stopPropagation()
@@ -394,6 +395,8 @@ $('a.route, .portfolioBtn').click (e)->
   linkTarget = $(this).attr('href')
   console.log 'linkTarget: ' + linkTarget
   router.navigate(linkTarget, true)
+
+# Fb Window behavior - Please refactor into Backbone views
 
 $('.fbIcon').click (e)->
   e.stopPropagation()

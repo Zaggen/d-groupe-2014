@@ -12,15 +12,15 @@
         <a href="/"><figure id="mainLogo" class="route"></figure></a>
         <nav id="NavBar">
             <ul>
-                <li class="current_page_item"><a href="/" class="route">Home</a></li>
-                <li><a href="/redes" class="route">Redes</a></li>
-                <li><a href="/noticias" class="route">Noticias</a></li>
-                <li class="mainLvl" class="route">Portafolio
+                <li><a href="/" class="current_page_item">Home</a></li>
+                <li><a href="/redes">Redes</a></li>
+                <li><a href="/noticias">Noticias</a></li>
+                <li class="mainLvl">Portafolio
                     <ul class="subLvl">
-                        <li><a href="/portafolio/on/kukaramakara" class="route">On</a></li>
-                        <li><a href="/portafolio/musical/fotos" class="route">Musical</a></li>
-                        <li><a href="/portafolio/corporativo" class="route">Corporativo</a></li>
-                        <li><a href="/portafolio/eventos" class="route">Eventos</a></li>
+                        <li><a href="/portafolio/on/kukaramakara">On</a></li>
+                        <li><a href="/portafolio/musical/fotos">Musical</a></li>
+                        <li><a href="/portafolio/corporativo/fotos">Corporativo</a></li>
+                        <li><a href="/portafolio/eventos/fotos">Eventos</a></li>
                     </ul>
                 </li>
                 <li><a href="/contacto" class="route">contacto</a></li>

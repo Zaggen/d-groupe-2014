@@ -224,12 +224,42 @@
     __extends(navigation, _super);
 
     function navigation() {
+      this.markAsSelected = __bind(this.markAsSelected, this);
+      this.navigate = __bind(this.navigate, this);
       return navigation.__super__.constructor.apply(this, arguments);
     }
 
     navigation.prototype.el = '#NavBar';
 
-    navigation.prototype.initialize = function() {};
+    navigation.prototype.initialize = function() {
+      this.$navItems = this.$el.find('a');
+      return this.$navItems.click((function(_this) {
+        return function(e) {
+          var $currentTarget, linkTarget;
+          e.stopPropagation();
+          e.preventDefault();
+          $currentTarget = $(e.currentTarget);
+          linkTarget = $currentTarget.attr('href');
+          return _this.navigate(linkTarget, $currentTarget);
+        };
+      })(this));
+    };
+
+    navigation.prototype.navigate = function(linkTarget, $currentTarget) {
+      this.markAsSelected($currentTarget);
+      try {
+        return router.navigate(linkTarget, true);
+      } catch (_error) {
+
+      }
+    };
+
+    navigation.prototype.markAsSelected = function($el) {
+      var selectedClass;
+      selectedClass = 'current_page_item';
+      this.$navItems.removeClass(selectedClass);
+      return $el.addClass(selectedClass);
+    };
 
     return navigation;
 
@@ -353,19 +383,6 @@
   });
 
   mainNav = new App.Views.navigation;
-
-
-  /*
-  $('.pageNavi li').click (e)->
-    page = $(this).index() + 1;
-    $('body').css 'cursor','wait'
-    newsViewCollection.fetchCollection(page)
-    newsCollection.at(0).set
-      title: 'yikes'
-      date: '2 Mayo 2014'
-      content: 'The content has changed so much since you were here'
-      imgSrc: 'imgs/news-dummy2.jpg'
-   */
 
   App.Routers.Router = (function(_super) {
     __extends(Router, _super);

@@ -17,7 +17,7 @@ if(have_posts()):
            'title' => get_the_title(),
            'date' => '2 Abril 2014',
            'content' => get_the_content(),
-           'imgSrc' => $thumbUrl[0]
+           'imgSrc' => getThumbUrl('newsThumb')
        );
        array_push($newsArray, $news);
     endwhile;

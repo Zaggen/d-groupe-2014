@@ -18,6 +18,27 @@ function stylesheetUri(){
     echo getStylesheetUri();
 }
 
+function getThumbUrlArr($thumbnailSize = 'small'){
+    $thumbId = get_post_thumbnail_id();
+    $thumbUrl = wp_get_attachment_image_src($thumbId,$thumbnailSize, true);
+    return $thumbUrl;
+}
+
+function getThumbUrl($thumbnailSize = 'small'){
+    $thumbUrl = getThumbUrlArr($thumbnailSize);
+    return $thumbUrl[0];
+}
+
+function getRoute(){
+    $link = rtrim(get_permalink(), '/'); # We remove the last trailing slash
+    return removeBaseUrl($link);
+}
+
+# Removes the site base url from the link, useful in our backbone routes, we can't use full urls but paths :)
+function removeBaseUrl($permalink){
+    return str_replace(get_site_url(), '', $permalink);
+}
+
 
 function getYtEmbedUrl($ytLink)
 {
@@ -102,5 +123,6 @@ if (!is_admin()) {
     wp_deregister_script('jquery');
 }
 
+add_image_size('onFrameThumb', 363, 306, true);
 add_image_size('newsThumb', 182, 141, true);
 add_image_size('galleryThumb', 142, 142, true);

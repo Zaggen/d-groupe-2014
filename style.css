@@ -771,6 +771,7 @@ body {
 }
 .kukaramakaraLogo {
   width: 99px;
+  margin-top: 16px!important;
   background-position: 0 0;
 }
 .lussacLogo {
@@ -1042,7 +1043,7 @@ ul.portfolioBtns li {
 .ourPlaces .partnersLogos {
   display: block;
   height: 112px;
-  margin: 16px auto;
+  margin: 53px auto 0;
 }
 /* Zgn-LightBox */
 .zgnLightBoxOVerlay {

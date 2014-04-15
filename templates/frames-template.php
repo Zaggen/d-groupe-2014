@@ -5,10 +5,24 @@
             <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
             <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
             <ul class="slider">
-                <li><a href="/portafolio/on/kukaramakara" class="route"><img src="<?php stylesheetUri(); ?>imgs/lussac.jpg"/></a></li>
-                <li><a href="/portafolio/on/lussac" class="route"><img src="<?php stylesheetUri(); ?>imgs/lussac.jpg"/></a></li>
-                <li><a href="/portafolio/on/sixxtina" class="route"><img src="<?php stylesheetUri(); ?>imgs/lussac.jpg"/></a></li>
-                <li><a href="/portafolio/on/delaire" class="route"><img src="<?php stylesheetUri(); ?>imgs/lussac.jpg"/></a></li>
+                <?php
+                query_posts('post_type=on&order=ASC');
+                while(have_posts()):
+                    if(have_posts()): the_post();
+                        $imgUrl = getThumbUrl('onFrameThumb');
+
+                        #Only create <li> if there is a featured image assigned to the on entry (default wp img)
+                        if(strpos($imgUrl, 'default') == false){
+                            echo '<li>';
+                            echo '<a href="'. getRoute() . '" class="route">';
+                                echo '<img src="' . $imgUrl . '"/>';
+                            echo '</a>';
+                            echo '</li>';
+                        }
+                    endif;
+                endwhile;
+
+                ?>
             </ul>
         </div>
     </div>

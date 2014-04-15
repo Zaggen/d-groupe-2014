@@ -37,6 +37,8 @@ class App.Collections.News extends Backbone.Collection
 
 # Views
 
+# News Views
+
 class App.Views.NewsCollection extends Backbone.View
   tagName: 'ul'
   id: 'newsFeed'
@@ -124,7 +126,16 @@ class App.Views.fullNews extends Backbone.View
     newsNavi.$el.addClass('hidden')
     this
 
-# Pagination
+# Navigation Views
+
+class App.Views.navigation extends Backbone.View
+  el: '#NavBar'
+
+  initialize: ->
+
+
+
+# Pagination Views
 
 class App.Views.pagination extends  Backbone.View
   className: '.pageNavi',
@@ -198,6 +209,8 @@ backToListBtn = new App.Views.ReturnToListBtn {
   el: '#backToNewsList'
   nav: newsNavi
 }
+
+mainNav = new App.Views.navigation
 ###
 $('.pageNavi li').click (e)->
   page = $(this).index() + 1;
@@ -260,6 +273,16 @@ class App.Routers.Router extends Backbone.Router
         @.navigate('#' + @slideRoutes[sliderId][index]);
       null
 
+  navigateOnLoad: ->
+
+    # Since we are using wp for this project, any other page than index will redirect to home,
+    # we want to scroll to the desired location after that http redirect. Backbone doesn't
+    # allow to trigger functions associated with a route is the path is the same, so we first
+    # change the route to the home, which is always visible, and then we trigger our navigate
+    linkTarget = window.location.pathname.replace('/' + baseFolder, '')
+    @navigate('/')
+    @navigate(linkTarget, yes)
+
   # Method to scroll up/down to a given position in px or to the
   # offset of an element which id matches the current route
   scrollTo: (scrollPos, removeFromFragment)->
@@ -299,7 +322,12 @@ navigateSection = (slide, prefix)->
   #
   null
 
+Backbone.history.start
+  pushState: true
+  root: baseFolder # Change to the basefolder on production
+
 $ =>
+
   router.on 'route:home' , ->
     router.scrollTo(0)
     root.sliders.main.slideTo('first')
@@ -331,9 +359,9 @@ $ =>
     router.scrollTo(Backbone.history.fragment)
     null
 
-Backbone.history.start
-  pushState: true
-  root: baseFolder # Change to the basefolder on production
+$(window).load ->
+  router.navigateOnLoad()
+
 
 # Fb Window behavior - Please refactor into Backbone views
 
@@ -341,7 +369,7 @@ $('a.route, .portfolioBtn').click (e)->
   e.stopPropagation()
   e.preventDefault()
   linkTarget = $(this).attr('href')
-  console.log linkTarget
+  console.log 'linkTarget: ' + linkTarget
   router.navigate(linkTarget, true)
 
 $('.fbIcon').click (e)->

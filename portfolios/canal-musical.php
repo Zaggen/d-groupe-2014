@@ -19,8 +19,10 @@
     <ul class="slider">
         <li class="gallery">
            <div class="grid_11">
-           <?php getGalleries('musical', 3, 2);   ?>
-           <?php /*placePicGal(getGalleries('musical')); */  ?>
+           <?php
+           $galleries = getGalleries('musical', 14, 1);
+           placePicGal($galleries);
+           ?>
            </div>
         </li>
         <li class="videoGallery">

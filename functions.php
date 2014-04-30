@@ -187,11 +187,9 @@ function placePicGal($galleryArr) {
  * */
 function getGalleries($postType = 'post', $imgPerPage = 0, $page = 1) {
     $galleries = array();
-    $imgCounter = 0; # Images Quantity
-    $pageLimit = (is_int($imgPerPage) && $imgPerPage > 0) ? true : false;
-    $pageIterator = 1;
-    $overflow = 0;
-    $overflowedObj = array();
+    $startRange = $page * $imgPerPage - $imgPerPage;
+    $endRange = $startRange + $imgPerPage;
+    $rangeLength = $imgPerPage;
 
     query_posts(array('post_type' => $postType));
     while (have_posts()):
@@ -199,119 +197,23 @@ function getGalleries($postType = 'post', $imgPerPage = 0, $page = 1) {
 
             $galTitle = get_the_title();
             $data = splitGalFromContent();
-            echo '$data[galleryIds]->'. $data['galleryIds'] . '</br>';
             $galIds = explode(',', $data['galleryIds']);
 
-            if($pageLimit){
+            $galImgQ = count($galIds);
 
-                if($pageIterator <= $page){
-                    $currentGalQ = count($galIds);
-                    echo '$currentGalQ ->'. $currentGalQ . '</br>';
-                    $imgCounter += $currentGalQ;
-                    echo '$imgCounter ->'. $imgCounter . '</br>';
-                    # -do not push gallery objs from any other page but the specified
-                    # -page iterator should increase each time it gets the $imgPerPage cuota filled by the counter
-                    # -overflowed images should go into another page, this is imgs from the current page that overflows
-                    # into $imgPerPage limit.
-
-                    /*if($imgCounter > $imgPerPage && $pageIterator !== $page){
-                        $overflow = $imgCounter - $imgPerPage;
-                        echo '$overflow ->'. $overflow . '</br>';
-                        $chunks = array_chunk($galIds, $currentGalQ - $overflow);
-
-                        echo '<pre>';
-                        print_r($chunks);
-                        echo '</pre>';
-                        $overflowedObj['title'] = $galTitle;
-                        $overflowedObj['ids'] = array_splice($galIds, $overflow);//$chunks[1];
-
-                        $galIds = array_splice($galIds, 0, $overflow); //$chunks[0];
-
-
-                        if($pageIterator !== $page){
-                            $pageIterator++;
-                        }
-                        echo '$pageIterator ->'. $pageIterator . '</br>';
-                        $imgCounter = $overflow; # We reset our imgCounter taking into account the overflowed images for the next page
-                    }*/
-
-                    if($imgCounter > $imgPerPage){
-
-                        echo '$galIds</br>';
-
-
-                        $overflow = $imgPerPage - $imgCounter; #Negative index
-                        echo '$overflow ->'. $overflow . '</br>';
-                        $overflowedIds = array_splice($galIds, $overflow);
-
-                        echo '<pre>';
-                        print_r($galIds);
-                        echo '</pre>';
-
-
-                        echo '$overflowedIds</br>';
-                        echo '<pre>';
-                        print_r($overflowedIds);
-                        echo '</pre>';
-
-                        if($pageIterator === $page){
-                            $galleries[] = createGalleryObj($galIds, $galTitle);
-                            break;
-                        }else{
-                            $overflowedObj['title'] = $galTitle;
-                            $overflowedObj['ids'] = $overflowedIds;
-
-                            $overflowedObj[] = array(
-                                'title' => $galTitle,
-                                'ids' => $overflowedIds
-                            );
-
-                            $imgCounter = abs($overflow);
-                            $pageIterator++;
-                        }
-
-
-                    }
-
-                    /*if($pageIterator === $page){
-                        echo '$page ->'. $page . '</br>';
-                        if(!empty($overflowedObj)){
-                            echo '$overflowedObj -> not empty</br>';
-                            $galleries[] = createGalleryObj($overflowedObj['ids'], $overflowedObj['title']);
-                            $overflowedObj = array();
-                        }
-                        if($imgCounter > $imgPerPage){
-                            $overflow = $imgPerPage - $imgCounter; #Negative index
-                            echo '$overflow ->'. $overflow . '</br>';
-                            $galIds = array_splice($galIds, 0, $overflow);
-
-                            echo '<pre>';
-                            print_r($galIds);
-                            echo '</pre>';
-                            $galleries[] = createGalleryObj($galIds, $galTitle);
-                            break;
-                        } else {
-                            $galleries[] = createGalleryObj($galIds, $galTitle);
-                        }
-
-                    }*/
-
-
+            if($startRange < $galImgQ){
+                $galIds = array_splice($galIds, $startRange, $rangeLength);
+                $galleries[] = createGalleryObj($galIds, $galTitle);
+                if($endRange > $galImgQ){
+                    $endRange -= $galImgQ;
+                    $startRange = 0;
+                    $rangeLength = $endRange;
                 }else{
                     break;
                 }
-
             }
-
-            #$galleries[] = createGalleryObj($galIds, $galTitle);
-
-            #placeTemplate('gallery-template', $gallery, array('colsQ' => 6, 'class' => 'musicGal'));
         endif;
     endwhile;
-
-    echo '<pre>';
-    print_r($galleries);
-    echo '</pre>';
 
     return $galleries;
 }

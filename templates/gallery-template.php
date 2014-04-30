@@ -3,7 +3,10 @@ $i = 0;
 $class = isset($args['class']) ? $args['class'] :  'gal';
 $j = 0; // Limit iterator - Remove when pagination is properly implemented please.
 $limit = 30; // Pagination for gallery needs to be implemented, meanwhile, just show up to $limit images
+$galTitle = array_shift($data);
+echo "<h3 class='galleryTitle'>{$galTitle}</h3>";
 foreach($data as $img):
+
     if($j == $limit)
         return false;
     $j++;

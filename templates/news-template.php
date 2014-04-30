@@ -21,7 +21,7 @@
         <span class="publishDate">
             <%= date %>
         </span>
-        <p>
+        <p class="entryContent">
             <%= content %>
         </p>
     </script>
@@ -29,16 +29,11 @@
         <ul id="newsFeed"></ul>
     </div>
     <input type="button" value="Regresar a la lista" id="backToNewsList" class="backToList hidden"/>
-    <ul id="newsNavi" class="pageNavi">
-        <li class="selectedNav">1</li>
-        <?php
-        $newsQ = wp_count_posts('noticia');
-        $publishedNewsQ = $newsQ->publish;
-        $newsPerPage = 3;
-        $pageQ = ceil($publishedNewsQ / $newsPerPage);
-        for($i = 2; $i <= $pageQ; $i++):
-            echo "<li>{$i}</li>";
-        endfor;
-        ?>
-    </ul>
+    <?php
+    $newsQ = wp_count_posts('noticia');
+    $publishedNewsQ = $newsQ->publish;
+    $newsPerPage = 3;
+    $pageQ = ceil($publishedNewsQ / $newsPerPage);
+    ?>
+    <ul id="newsNavi" class="pageNavi" data-page-quantity="<?php echo $pageQ; ?>"></ul>
 </div>

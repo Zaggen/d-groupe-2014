@@ -8,7 +8,7 @@
             <ul class="portfolioBtns navigator">
                 <li><a href="/portafolio/on/kukaramakara" class="portfolioBtn portfolioPlaceBtn kukaramakaraBtn selected"></a></li>
                 <li><a href="/portafolio/on/lussac" class="portfolioBtn portfolioPlaceBtn lussacBtn"></a></li>
-                <li><a href="/portafolio/on/sixxtina" class="portfolioBtn portfolioPlaceBtn sixxtinaBtn"></a></li>
+                <li><a href="/portafolio/on/sixxtina" class="portfolioBtn portfolioPlaceBtn sixttinaBtn"></a></li>
                 <li><a href="/portafolio/on/delaire" class="portfolioBtn portfolioPlaceBtn delaireBtn"></a></li>
             </ul>
         </div>
@@ -18,7 +18,7 @@
         <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
         <ul class="slider">
             <?php
-            // Get all video galleries and set an array
+            # Get all video galleries and set an array
             $videoGallery = array();
             query_posts('post_type=video');
             while(have_posts()):
@@ -34,30 +34,22 @@
                 endif;
             endwhile;
 
-           /* echo '<pre>';
-            print_r($videoGallery);
-            echo '</pre>';*/
-
+            # Get all the content text and images from the gallery
             query_posts('post_type=on&order=ASC');
             while(have_posts()):
                 if(have_posts()): the_post();
                     echo '<li>';
                         echo '<div class="ourPlaces grid_11">';
-                                $content = get_the_content();
-                                preg_match('/\[gallery ids="(.*)"\]/', $content, $match);
-                                $content = str_replace($match[0], '', $content);
-                                $content = apply_filters('the_content', $content);
-                                $galleryIds = $match[1]; // String
-                                $gallery = createGalleryObj($galleryIds);
 
-                               /* echo '<pre>';
-                                print_r($post->post_name);
-                                echo '</pre>';*/
+                                $data = splitGalFromContent();
+                                $content = apply_filters('the_content', $data['content']);
+                                $gallery = createGalleryObj($data['galleryIds']);
 
                                 $entryData = array(
                                     'title' => get_the_title(),
                                     'content' => $content
                                 );
+
                                 placeTemplate('on-template', $entryData);
 
                                 if(!empty($gallery))

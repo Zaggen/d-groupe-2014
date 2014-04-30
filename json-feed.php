@@ -3,8 +3,7 @@
  * Template Name: News.json
  */
 
-//header('content-type: application/json; charset=ISO-8859-1');
-header("access-control-allow-origin: *");
+header('content-type: application/json; charset=ISO-8859-1');
 
 query_posts(array('post_type' => 'noticia', 'posts_per_page' => '3', 'paged' => $page));
 if(have_posts()):

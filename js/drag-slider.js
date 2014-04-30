@@ -10,29 +10,12 @@
 
   Slider = (function() {
     function Slider(sliderId, config) {
-      var sliderItemWidth, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       this.sliderId = sliderId;
       if (config == null) {
         config = {};
       }
       $ = window.jQuery;
-      this.$sliderViewport = $('#' + sliderId);
-      this.$slider = $(this.$sliderViewport.children('.slider'));
-      this.$sliderItems = $(this.$slider.children('li'));
-      this.$sliderPrevBtn = $(this.$sliderViewport.children('.prevBtn'));
-      this.$sliderNextBtn = $(this.$sliderViewport.children('.nextBtn'));
-      if (config.navigatorInParent != null) {
-        this.$sliderNavBtns = $(this.$sliderViewport.parent().find('.navigator a'));
-      } else {
-        this.$sliderNavBtns = $(this.$sliderViewport.children('.navigator').children());
-      }
-      this.viewPortWidth = this.$sliderViewport.width();
-      this.elementsQ = this.$sliderItems.length;
-      this.sliderWidth = this.elementsQ * 100;
-      sliderItemWidth = 100 / this.elementsQ;
-      this.rightLimit = (this.viewPortWidth * this.elementsQ) - this.viewPortWidth;
-      this.$slider.css('width', "" + this.sliderWidth + "%");
-      this.$sliderItems.css('width', "" + sliderItemWidth + "%");
       this.settings = {
         viewportMaxWidth: (_ref = config.viewportMaxWidth) != null ? _ref : 1000,
         viewportMaxHeight: (_ref1 = config.viewportMaxHeight) != null ? _ref1 : 500,
@@ -44,8 +27,25 @@
         autoHideBtns: (_ref7 = config.autoHideBtns) != null ? _ref7 : true,
         duration: (_ref8 = config.duration) != null ? _ref8 : 1000,
         emmitEvents: (_ref9 = config.emmitEvents) != null ? _ref9 : false,
-        draggable: (_ref10 = config.draggable) != null ? _ref10 : true
+        draggable: (_ref10 = config.draggable) != null ? _ref10 : true,
+        timingClass: (_ref11 = config.timingClass) != null ? _ref11 : 'trans_point8Sec',
+        preventLinksOnDrag: (_ref12 = config.allowLinks) != null ? _ref12 : true
       };
+      this.$sliderViewport = $('#' + sliderId);
+      this.$slider = $(this.$sliderViewport.children('.slider'));
+      this.$sliderItems = $(this.$slider.children('li'));
+      this.$sliderPrevBtn = $(this.$sliderViewport.children('.prevBtn'));
+      this.$sliderNextBtn = $(this.$sliderViewport.children('.nextBtn'));
+      if (this.settings.preventLinksOnDrag) {
+        this.$sliderLinks = this.$sliderItems.children().children();
+      }
+      if (config.navigatorInParent != null) {
+        this.$sliderNavBtns = $(this.$sliderViewport.parent().find('.navigator a'));
+      } else {
+        this.$sliderNavBtns = $(this.$sliderViewport.children('.navigator').children());
+      }
+      this.setSlider();
+      this.$slider.addClass(this.settings.timingClass);
       this.index = 0;
       this.slideToPos = 0;
       this.draggedEl = null;
@@ -74,7 +74,8 @@
           return function(e) {
             e.stopPropagation();
             e.preventDefault();
-            return _this.dragStart(e);
+            _this.dragStart(e);
+            return null;
           };
         })(this));
         $(document).mouseup((function(_this) {
@@ -85,7 +86,38 @@
           };
         })(this));
       }
+      $(window).resize((function(_this) {
+        return function() {
+          return _this.setSlider();
+
+          /*
+          if @settings.preventLinksOnDrag
+          
+            Not Working :S
+            @$sliderLinks.click (e)=>
+              e.stopImmediatePropagation()
+              e.preventDefault()
+              if @draggedEl
+                alert 'yep it was dragged'
+                @draggedEl = null
+                console.log '@draggedEl is ' + @draggedEl
+              else
+                alert 'nopes'
+           */
+        };
+      })(this));
     }
+
+    Slider.prototype.setSlider = function() {
+      var sliderItemWidth;
+      this.viewPortWidth = this.$sliderViewport.width();
+      this.elementsQ = this.$sliderItems.length;
+      this.sliderWidth = this.elementsQ * 100;
+      sliderItemWidth = 100 / this.elementsQ;
+      this.rightLimit = (this.viewPortWidth * this.elementsQ) - this.viewPortWidth;
+      this.$slider.css('width', "" + this.sliderWidth + "%");
+      return this.$sliderItems.css('width', "" + sliderItemWidth + "%");
+    };
 
     Slider.prototype.dragStart = function(e) {
       var $el, startX;
@@ -94,10 +126,10 @@
       startX = e.pageX;
       this.draggedEl = e.currentTarget;
       this.slideToPos = this.$slider.position().left;
-      this.$slider.stop();
+      this.$slider.removeClass(this.settings.timingClass);
       return $el.on('mousemove', (function(_this) {
         return function(ev) {
-          var offsetX;
+          var dragPos, offsetX;
           offsetX = startX - ev.pageX;
           startX = ev.pageX;
           _this.slideToPos -= offsetX;
@@ -118,7 +150,8 @@
               _this.hasLimitClass = true;
             }
           }
-          _this.$slider.css('left', _this.slideToPos + 'px');
+          dragPos = (_this.slideToPos / _this.viewPortWidth) * 100;
+          _this.$slider.css('left', dragPos + '%');
           _this.isOutBounds = false;
 
           /*
@@ -134,7 +167,9 @@
 
     Slider.prototype.dragEnd = function(e) {
       var minToAction, offsetPercentage, offsetX, tempIndex;
-      if (!((this.draggedEl == null) || this.clicked)) {
+      if (this.draggedEl || this.clicked) {
+        console.log('drag end event fired for ' + this.sliderId);
+        console.log(this.draggedEl);
         if (this.hasLimitClass) {
           this.$sliderViewport.removeClass('onLeftLimit onRightLimit');
           this.hasLimitClass = false;
@@ -157,9 +192,9 @@
         }
         console.log("tempIndex:" + tempIndex);
         this.slideTo(tempIndex);
-        console.log('mouse is up');
         $(this.draggedEl).off('mousemove');
         this.draggedEl = null;
+        console.log(this.draggedEl);
         return false;
       }
     };
@@ -220,9 +255,8 @@
         this.$sliderNavBtns.removeClass('selected');
         $(this.$sliderNavBtns[this.index]).addClass('selected');
       }
-      this.$slider.stop().animate({
-        'left': this.slideToPos + '%'
-      }, this.settings.duration);
+      this.$slider.addClass(this.settings.timingClass);
+      this.$slider.css('left', this.slideToPos + '%');
       if (this.settings.emmitEvents) {
         return $.event.trigger('onSlide', [this.index, this.sliderId]);
       }

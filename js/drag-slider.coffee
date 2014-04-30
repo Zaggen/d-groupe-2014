@@ -6,25 +6,6 @@ class Slider
   constructor:(@sliderId, config = {})->
     $ = window.jQuery
 
-    @$sliderViewport   = $('#' + sliderId)
-    @$slider           = $ @$sliderViewport.children('.slider')
-    @$sliderItems      = $ @$slider.children('li')
-    @$sliderPrevBtn    = $ @$sliderViewport.children('.prevBtn')
-    @$sliderNextBtn    = $ @$sliderViewport.children('.nextBtn')
-    if config.navigatorInParent?
-      @$sliderNavBtns    = $ @$sliderViewport.parent().find('.navigator a')
-    else
-      @$sliderNavBtns    = $ @$sliderViewport.children('.navigator').children()
-
-
-    @viewPortWidth = @$sliderViewport.width()
-    @elementsQ = @$sliderItems.length
-    @sliderWidth = @elementsQ * 100
-    sliderItemWidth = 100 / @elementsQ
-    @rightLimit = (@viewPortWidth * @elementsQ) - @viewPortWidth #
-    @$slider.css 'width', "#{@sliderWidth}%"
-    @$sliderItems.css 'width', "#{sliderItemWidth}%"
-
     @settings =
       viewportMaxWidth:  config.viewportMaxWidth ? 1000
       viewportMaxHeight: config.viewportMaxHeight ? 500
@@ -33,10 +14,35 @@ class Slider
       cycle:             config.cycle ? yes
       navigator:         config.navigator ? no
       navigatorEvents:   config.navigatorEvents ? no
-      autoHideBtns:      config.autoHideBtns ? yes ## not implemented
-      duration:          config.duration ? 1000
+      autoHideBtns:      config.autoHideBtns ? yes # Not implemented yet
+      duration:          config.duration ? 1000 # Deprecated, using css transitions now
       emmitEvents:       config.emmitEvents ? no
       draggable:         config.draggable ? yes
+      timingClass:       config.timingClass ? 'trans_point8Sec' # Must be created in the css
+      preventLinksOnDrag:config.allowLinks ? yes
+
+    #jQuery Objects
+    @$sliderViewport   = $('#' + sliderId)
+    @$slider           = $ @$sliderViewport.children('.slider')
+    @$sliderItems      = $ @$slider.children('li')
+    @$sliderPrevBtn    = $ @$sliderViewport.children('.prevBtn')
+    @$sliderNextBtn    = $ @$sliderViewport.children('.nextBtn')
+
+    # In order to prevent any other link event handler to activate first we find the childrens and use those to
+    # stop and Immediate Propagation of the event
+    if @settings.preventLinksOnDrag
+      @$sliderLinks = @$sliderItems.children().children()
+
+    if config.navigatorInParent?
+      @$sliderNavBtns    = $ @$sliderViewport.parent().find('.navigator a')
+    else
+      @$sliderNavBtns    = $ @$sliderViewport.children('.navigator').children()
+
+
+    #Slider sizing variables and settings
+    @setSlider()
+
+    @$slider.addClass(@settings.timingClass) # Needed when the slide is not activated by click events
 
 
     @index = 0
@@ -67,6 +73,7 @@ class Slider
         e.stopPropagation()
         e.preventDefault()
         @dragStart(e)
+        null
 
       # Removes mousemove ev when the mouse is up anywhere in
       # the doc using the ev target stored in the mousedow ev
@@ -78,6 +85,35 @@ class Slider
         e.preventDefault()
         @dragEnd(e)
 
+    $( window ).resize =>
+      @setSlider()
+
+      ###
+      if @settings.preventLinksOnDrag
+
+        Not Working :S
+        @$sliderLinks.click (e)=>
+          e.stopImmediatePropagation()
+          e.preventDefault()
+          if @draggedEl
+            alert 'yep it was dragged'
+            @draggedEl = null
+            console.log '@draggedEl is ' + @draggedEl
+          else
+            alert 'nopes'
+      ###
+
+
+
+
+  setSlider: ->
+    @viewPortWidth = @$sliderViewport.width()
+    @elementsQ = @$sliderItems.length
+    @sliderWidth = @elementsQ * 100
+    sliderItemWidth = 100 / @elementsQ
+    @rightLimit = (@viewPortWidth * @elementsQ) - @viewPortWidth #
+    @$slider.css 'width', "#{@sliderWidth}%"
+    @$sliderItems.css 'width', "#{sliderItemWidth}%"
 
   dragStart: (e)->
     $el = $ e.currentTarget
@@ -87,11 +123,11 @@ class Slider
     @slideToPos = @$slider.position().left
     #unless @slideToPos is 0
      # console.log "slideToPos:#{@slideToPos}"
-    @$slider.stop()
+  #  @$slider.stop()
+
+    @$slider.removeClass(@settings.timingClass) # We are doin direct manipulation, no need for transitions here
 
     $el.on 'mousemove', (ev)=>
-
-     # console.log "slideToPos:#{@slideToPos}"
 
       offsetX = startX - ev.pageX # Difference between the new mouse x pos and the previus one
 
@@ -117,7 +153,10 @@ class Slider
           @$sliderViewport.addClass('onRightLimit')
           @hasLimitClass = yes
 
-      @$slider.css('left', @slideToPos + 'px')
+      dragPos = (@slideToPos / @viewPortWidth) * 100
+
+      #@$slider.css('left', @slideToPos + 'px') Deprecated px drag
+      @$slider.css('left', dragPos + '%')
       @isOutBounds = no
       ###
       We should use a better way to move the elements around, using forced gpu calcs
@@ -128,39 +167,45 @@ class Slider
       null
 
   dragEnd: (e)->
-    unless not @draggedEl? or @clicked
+    if @draggedEl or @clicked #not working, always null :S
+      console.log 'drag end event fired for ' + @sliderId
+      console.log @draggedEl
       if @hasLimitClass
          @$sliderViewport.removeClass('onLeftLimit onRightLimit')
          @hasLimitClass = no
 
       offsetX = @dragStartX - e.pageX
-      #console.log 'offsetX:' + offsetX
       offsetPercentage = Math.abs (offsetX / @viewPortWidth)
       minToAction = 0.1 # The user must have dragged the slider at least 10% to move it
-      #console.log "offsetPercentage #{offsetPercentage}"
       if offsetPercentage < minToAction then offsetPercentage = 0
 
       if offsetX > 0 and not @isOutBounds
+
         ## Dragued-> right
         console.log "Dragued-> right"
         tempIndex = @index + Math.ceil(offsetPercentage)
       else if offsetX < 0 and not @isOutBounds
+
         ## Dragued-> left
         console.log "Dragued-> left"
         tempIndex = @index - Math.ceil(offsetPercentage)
       else
+
         ## Didn't move, or at least not much
         console.log "Didn't move, or at least not much"
         tempIndex = @index
 
       console.log "tempIndex:" + tempIndex
       @slideTo(tempIndex)
+
       # if it goes beyond a certain percentage we use slideTo to move
       # to the next slide or we use it to center up the current one
-      console.log 'mouse is up'
-      #console.log "The total offsetPercentage is #{offsetPercentage}"
       $(@draggedEl).off('mousemove')
+
+      #if not @settings.preventLinksOnDrag
       @draggedEl = null
+
+      console.log @draggedEl
       false
 
   ###
@@ -211,7 +256,9 @@ class Slider
       @$sliderNavBtns.removeClass 'selected'
       $(@$sliderNavBtns[@index]).addClass 'selected'
 
-    @$slider.stop().animate({'left': @slideToPos + '%'}, @settings.duration)
+    #@$slider.stop().animate({'left': @slideToPos + '%'}, @settings.duration)
+    @$slider.addClass(@settings.timingClass)
+    @$slider.css('left', @slideToPos + '%')
     if(@settings.emmitEvents)
       $.event.trigger('onSlide', [@index, @sliderId]);
 

@@ -5,6 +5,13 @@ $ = root.jQuery
 root.template = (id)->
   _.template( $('#' + id).html() )
 
+root.removeTrailingSlash = (route)->
+  index = route.length - 1
+  if route.charAt(index) is '/'
+    route = route.substring(0, index)
+  else
+    route
+
 
 # Used to filter each ajax json request for the backbone models
 baseFolder = window.location.pathname.replace('/','').split('/')[0] # Also used as the backbone history root
@@ -14,7 +21,7 @@ $.ajaxPrefilter (options)->
   false
 
 
-class root.App
+class root.Dgroupe
   @Models: {}
   @Collections: {}
   @Views: {}
@@ -22,7 +29,7 @@ class root.App
 
 #Models
 
-class App.Models.News extends Backbone.Model
+class Dgroupe.Models.News extends Backbone.Model
   defaults:
     title: 'Lorem'
     date: '2 Abril 2014'
@@ -31,15 +38,15 @@ class App.Models.News extends Backbone.Model
 
 #Collections
 
-class App.Collections.News extends Backbone.Collection
-  model: App.Models.News
-  url: '/noticias'
+class Dgroupe.Collections.News extends Backbone.Collection
+  model: Dgroupe.Models.News
+  url: '/news-feed'
 
 # Views
 
 # News Views
 
-class App.Views.NewsCollection extends Backbone.View
+class Dgroupe.Views.NewsCollection extends Backbone.View
   tagName: 'ul'
   id: 'newsFeed'
 
@@ -57,6 +64,7 @@ class App.Views.NewsCollection extends Backbone.View
     #console.log @render().el
 
   fetchCollection: (page = 1, fetchCurrent = false)->
+    console.log 'fetching colecion'
     @$el.addClass('pointEightOpcty')
 
     if(@page isnt page or fetchCurrent is true)
@@ -85,14 +93,14 @@ class App.Views.NewsCollection extends Backbone.View
     console.log @collection.toJSON()
 
     @collection.each (news)=>
-      newsView = new App.Views.News model: news
+      newsView = new Dgroupe.Views.News model: news
       newsView.delegateEvents()
       nodes.push newsView.render().el
     @$el.append nodes
     $parent.append(@el)
     this
 
-class App.Views.News extends Backbone.View
+class Dgroupe.Views.News extends Backbone.View
   tagName: 'li'
   className: 'entry'
 
@@ -102,7 +110,7 @@ class App.Views.News extends Backbone.View
   showFullEntry: (e)=>
     e.preventDefault()
     e.stopPropagation()
-    fullNews = new App.Views.fullNews model: @model
+    fullNews = new Dgroupe.Views.fullNews model: @model
     $('#newsWrapper').html(fullNews.render().el)
 
   template: template('newsEntries')
@@ -114,7 +122,7 @@ class App.Views.News extends Backbone.View
     @$el.html @template @model.toJSON()
     this
 
-class App.Views.fullNews extends Backbone.View
+class Dgroupe.Views.fullNews extends Backbone.View
   tagName: 'article'
   className: 'fullEntry'
 
@@ -122,84 +130,149 @@ class App.Views.fullNews extends Backbone.View
 
   render: ->
     @$el.html @template @model.toJSON()
-    backToListBtn.$el.removeClass('hidden')
-    newsNavi.$el.addClass('hidden')
+    App.backToListBtn.$el.removeClass('hidden')
+    App.newsNavi.$el.addClass('hidden')
     this
 
 # Navigation View
 
-class App.Views.navigation extends Backbone.View
+class Dgroupe.Views.navigation extends Backbone.View
   el: '#NavBar'
 
   initialize: ->
     @$navItems = @$el.find('a')
-    @$navItems.click (e)=>
-      e.stopPropagation()
-      e.preventDefault()
-      $currentTarget = $(e.currentTarget)
-      linkTarget = $currentTarget.attr('href')
-      @navigate(linkTarget, $currentTarget)
+    @currentRoute = ''
+
+  events:
+    'click a': 'navHandler'
+
+  navHandler: (e)=>
+    e.stopPropagation()
+    e.preventDefault()
+    $currentTarget = $(e.currentTarget)
+    linkTarget = $currentTarget.attr('href')
+    @navigate(linkTarget, $currentTarget)
 
   navigate: (linkTarget, $currentTarget) =>
     @markAsSelected($currentTarget)
     try
-      router.navigate(linkTarget, true)
-    catch (e)
-      throw new Error('This method needs a router instance defined named "router"')
+      App.navigate(linkTarget, true)
+      @currentRoute = linkTarget
+    catch e
+      throw new Error('This method needs a router instance defined named "app"')
 
   markAsSelected: ($el)=>
     selectedClass = 'current_page_item'
+
+    $closestUl = $el.closest('ul')
+
+    if $closestUl.hasClass 'subLvl'
+      $closestUl.closest('.mainLvl').addClass(selectedClass)
+    else
+      $('.mainLvl').removeClass(selectedClass)
+
     @$navItems.removeClass(selectedClass)
     $el.addClass(selectedClass)
 
+  findCurrentRoute: (route)->
+    console.log 'called find route ->' + route
+    index = 0
+    for el in @$navItems
+      elLink = $(el).attr('href')
+      console.log elLink
+      if elLink.indexOf(route) isnt -1
+        break
+      else
+        index++
+
+    @markAsSelected $(@$navItems[index])
+
 # Pagination View
 
-class App.Views.pagination extends  Backbone.View
+# Pagination View
+
+class Dgroupe.Views.pagination extends  Backbone.View
   className: '.pageNavi',
   el: '#newsNavi'
 
   initialize: ->
-    @pageQ = @$el.children().length
-    @render()
+    @pageQ = parseInt @$el.attr('data-page-quantity')
+    @setCurrentPageNum(1)
 
+  setCurrentPageNum:(currentPageNum) ->
+    @currentPageNum = parseInt(currentPageNum)
+    @render()
 
   render: ->
     # Renders the pagination list e.g : prev - 1 - 2 - 3 ... 8 - last (Not fully implemented yet)
     nodes = []
+    btnsLimit = 4
+    selectedPage = @currentPageNum
+    halfLimit = btnsLimit / 2
+    leftHalf = Math.ceil(halfLimit)
+    rightHalf = btnsLimit - leftHalf
+
+    for x in [leftHalf..0]
+      if selectedPage - x <= 0
+        leftHalf--
+        rightHalf++
+
+    for x in [rightHalf..0]
+      if selectedPage + x >= @pageQ
+        leftHalf++
+        rightHalf--
+
+
+    minRange = selectedPage - leftHalf
+    maxRange = selectedPage + rightHalf
+    skipped = no
+
 
     for num in [1..@pageQ]
-      pageNum = new App.Views.pageBtn
-        pageNum : num
-        className: if num is 1 then 'navBtns selectedNav' else 'navBtns'
-      nodes.push pageNum.render().el
+      if num is 1 or minRange <= num <= maxRange or num is @pageQ
+        liItem = new Dgroupe.Views.pageBtn
+          pageNum : num
+          className: if num is selectedPage then 'navBtns selectedNav' else 'navBtns'
+        skipped = no
+      else
+        if not skipped
+          liItem = new Dgroupe.Views.naviItem
+            pageNum: '...'
+            className: 'navBtns dots'
+
+          skipped = yes
+
+
+      nodes.push liItem.render().el
     @$el.html nodes
 
-
-class App.Views.pageBtn extends Backbone.View
+class Dgroupe.Views.naviItem extends Backbone.View
   tagName: 'li'
-  events:
-    'click': 'changePage'
+  className: 'navBtns'
 
   initialize: (options)->
     @pageNum = options.pageNum
 
-  changePage: (e)->
-    @$navBtns = $('.navBtns')
-    @crntPage = $(e.currentTarget).index() + 1;
-    $('body').css 'cursor','wait'
-    console.log @$navBtns[0]
-    @$navBtns.removeClass('selectedNav')
-    @$el.addClass('selectedNav')
-    newsViewCollection.fetchCollection(@crntPage)
-
   render: ->
-    console.log @pageNum
-    @$el.children().detach()
-    @$el.append @pageNum
-    this.$el.children().detach()
+    @$el.text @pageNum
     this
 
-class App.Views.ReturnToListBtn extends Backbone.View
+
+
+class Dgroupe.Views.pageBtn extends Dgroupe.Views.naviItem
+  tagName: 'li'
+  events:
+    'click': 'changePage'
+
+  changePage: (e)->
+    @$navBtns = $('.navBtns')
+    @crntPage = $(e.currentTarget).text()
+    $('body').css 'cursor','wait'
+    App.newsViewCollection.fetchCollection(@crntPage)
+    App.newsNavi.setCurrentPageNum(@crntPage)
+
+
+class Dgroupe.Views.ReturnToListBtn extends Backbone.View
   initialize: (options)->
     @listView = options.listView
     @el = options.el
@@ -214,22 +287,53 @@ class App.Views.ReturnToListBtn extends Backbone.View
     @$el.addClass('hidden')
     @nav.$el.removeClass('hidden')
 
+# Contact Form View
+
+class Dgroupe.Views.contact extends Backbone.View
+  el: '#mainContact'
+
+  initialize: ->
+    @$alert =  $ @$el.parent().find('.alert')
+
+  events:
+    'submit': 'contactHandler'
+
+  contactHandler: (e)=>
+    e.preventDefault()
+    @sendForm @$el.serialize()
+
+  sendForm: (data)->
+    $.ajax
+      type: "POST"
+      url: @$el.attr( 'action' )
+      data: data
+
+      success: ( response )=>
+        @$el.before @setMsgAlert(response)
+        if response.status is 'success'
+          @$el.addClass 'setOpacityTenPercent'
+          @$el.find('#contactSubmit').remove()
+
+      error: =>
+        msgObj =
+          status: 'failed'
+          title: 'Error de conexión'
+          description: 'Hubo un problema al intenta enviar tu mensaje, intentalo mas tarde'
+
+        @$el.before @setMsgAlert(msgObj)
+
+  setMsgAlert: (response)->
+    console.log response
+    alertClass = 'alert ' + if response.status is 'success' then 'alertSuccess' else 'alertDanger'
+    @$alert
+      .removeClass()
+      .addClass(alertClass)
+      .html('<strong>' + response.title + '</strong> ' + response.description)
 
 
-news = new App.Models.News
-newsCollection = new  App.Collections.News
-newsViewCollection = new App.Views.NewsCollection  collection: newsCollection
 
-newsNavi = new App.Views.pagination
-backToListBtn = new App.Views.ReturnToListBtn {
-  listView: newsViewCollection
-  el: '#backToNewsList'
-  nav: newsNavi
-}
 
-mainNav = new App.Views.navigation
-
-class App.Routers.Router extends Backbone.Router
+class Dgroupe.Routers.Router extends Backbone.Router
   routes:
     '(/)' : 'home'
     'redes(/)': 'social'
@@ -252,27 +356,51 @@ class App.Routers.Router extends Backbone.Router
     # Route names for each slider, based on the order the slides are placed on each slider
     @onSlides = ['kukaramakara', 'lussac', 'sixxtina', 'delaire']
     @musicSlides = ['fotos', 'videos', 'djs', 'calendario']
-    @corpSlides = ['fotos', 'videos', 'calendario', 'contacto']
-    @eventSlides = ['fotos', 'videos', 'calendario', 'contacto']
+    @corpSlides = ['fotos', 'videos']
+    @eventSlides = ['fotos', 'videos']
 
     # When a manual slide is made on any of these sliders, an update to the url will be made based on the
     # current index of the slided slider :) and the corresponding index of the @slideRoutes property array.
     @slideRoutes =
-      mainSlider : ['#', 'redes', 'noticias']
+      mainSlider : ['', 'redes', 'noticias']
       onSectionSldr: onPath + path for path in @onSlides
       musicSectionSldr : musicPath + path for path in @musicSlides
       eventSectionSldr: eventPath + path for path in @eventSlides
       corpSectionSldr: corpPath + path for path in @corpSlides
 
+    # Models/Collections Instances
+    @news = new Dgroupe.Models.News
+    @newsCollection = new  Dgroupe.Collections.News
+
+    # Views Instances
+    @mainNav = new Dgroupe.Views.navigation
+
+    @newsViewCollection = new Dgroupe.Views.NewsCollection  collection: @newsCollection
+    @newsNavi = new Dgroupe.Views.pagination
+    @backToListBtn = new Dgroupe.Views.ReturnToListBtn
+      listView: @newsViewCollection
+      el: '#backToNewsList'
+      nav: @newsNavi
+    @contact = new Dgroupe.Views.contact
+
+    # Event Listeners
+
+    $sections = $('body > section:not(#homeSection)')
+    $sections.mouseenter (e)=>
+      $currentSection = $(e.currentTarget)
+      sectionName = $currentSection.attr('id')
+      path = '/' + if sectionName isnt undefined then sectionName else ''
+      @updateRouteNav(path)
+
     # Event listener for all sliders, when one slides it will
     # trigger a url update using the navigate from backbone
     $(document).bind 'onSlide', (e, index, sliderId)=>
-
       console.log "sliderId: #{sliderId}"
       console.log "index: #{index}"
-
+      console.log '@slideRoutes[sliderId][index] ' + @slideRoutes[sliderId][index]
       if @slideRoutes[sliderId][index] isnt 'undefined'
         @.navigate('#' + @slideRoutes[sliderId][index]);
+        @mainNav.findCurrentRoute(@slideRoutes[sliderId][index])
       null
 
   navigateOnLoad: ->
@@ -281,10 +409,17 @@ class App.Routers.Router extends Backbone.Router
     # we want to scroll to the desired location after that http redirect. Backbone doesn't
     # allow to trigger functions associated with a route is the path is the same, so we first
     # change the route to the home, which is always visible, and then we trigger our navigate
-    linkTarget = window.location.pathname.replace('/' + baseFolder, '')
+    linkTarget = window.location.pathname.replace('/' + baseFolder, '').replace('/', '')
+    linkTarget = root.removeTrailingSlash(linkTarget)
     console.log 'linkTarget: ' + linkTarget
     @navigate('/')
     @navigate(linkTarget, yes)
+    @mainNav.findCurrentRoute(linkTarget)
+
+
+  updateRouteNav: (route)->
+    @navigate(route, no)
+    @mainNav.findCurrentRoute(route)
 
   # Method to scroll up/down to a given position in px or to the
   # offset of an element which id matches the current route
@@ -335,14 +470,14 @@ class App.Routers.Router extends Backbone.Router
         console.log 'index is ' + index
         root.sliders[slidersKey].slideTo(index)
       catch e
-        console.error 'There are no slides defined in the router for this slider. \n' + e.message
+        console.error 'There are no slides defined in the App for this slider. \n' + e.message
     else
       console.warn('navigateSection was called with a null slide argument')
 
     null
 
 
-router = new App.Routers.Router();
+App = new Dgroupe.Routers.Router();
 
 
 Backbone.history.start
@@ -351,50 +486,51 @@ Backbone.history.start
 
 $ =>
 
-  router.on 'route:home' , ->
-    router.scrollTo(0)
+  App.on 'route:home' , ->
+    App.scrollTo(0)
     root.sliders.main.slideTo('first')
+    App.mainNav.findCurrentRoute('/')
     null
 
-  router.on 'route:news' , ->
-    router.scrollTo(0)
-    root.sliders.main.slideTo('last')
-    null
-
-  router.on 'route:social' , ->
-    router.scrollTo(0)
+  App.on 'route:social' , ->
+    App.scrollTo(0)
     root.sliders.main.slideTo(1)
+    App.mainNav.findCurrentRoute('/redes')
     null
 
-  router.on 'route:onSection' , (slide)->
-    router.navigateSection(slide, 'on')
+  App.on 'route:news' , ->
+    App.scrollTo(0)
+    root.sliders.main.slideTo('last')
+    App.mainNav.findCurrentRoute('/noticias')
+    null
 
-  router.on 'route:musicSection' , (slide)->
-    router.navigateSection(slide, 'music')
+  App.on 'route:onSection' , (slide)->
+    App.navigateSection(slide, 'on')
 
-  router.on 'route:corpSection' , (slide)->
-    router.navigateSection(slide, 'corp')
+  App.on 'route:musicSection' , (slide)->
+    App.navigateSection(slide, 'music')
 
-  router.on 'route:eventsSection' , (slide)->
-    router.navigateSection(slide, 'event')
+  App.on 'route:corpSection' , (slide)->
+    App.navigateSection(slide, 'corp')
 
-  router.on 'route:contact' , ->
-    router.scrollTo(Backbone.history.fragment)
+  App.on 'route:eventsSection' , (slide)->
+    App.navigateSection(slide, 'event')
+
+  App.on 'route:contact' , ->
+    App.scrollTo(Backbone.history.fragment)
     null
 
 $(window).load ->
 
   #Once the page is loaded with a route diferent than home, slide/scroll to the corresponding section
-  router.navigateOnLoad()
+  App.navigateOnLoad()
 
 # Refactor
-
 $('a.route, .portfolioBtn').click (e)->
-  e.stopPropagation()
   e.preventDefault()
   linkTarget = $(this).attr('href')
   console.log 'linkTarget: ' + linkTarget
-  router.navigate(linkTarget, true)
+  App.navigate(linkTarget, true)
 
 # Fb Window behavior - Please refactor into Backbone views
 

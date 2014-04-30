@@ -1,4 +1,4 @@
-<section class="pageSection">
+<section id="homeSection" class="pageSection">
     <section id="mainSlider" class="sliderViewport">
         <!-- Left-Right buttons to navigate back and forward in the slider-->
         <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>

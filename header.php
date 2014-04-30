@@ -1,4 +1,4 @@
-<html lang="es">
+html lang="es">
 <head>
     <meta charset="utf8"/>
     <title>Dgroupe</title>

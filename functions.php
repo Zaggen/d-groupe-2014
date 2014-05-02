@@ -162,34 +162,36 @@ function placeVideoGal($terms) {
     }
 }
 
-/*function placePicGal($postType) {
-    query_posts(array('post_type' => $postType));
-    while (have_posts()):
-        if (have_posts()): the_post();
-            $data = splitGalFromContent();
-            $gallery = createGalleryObj($data['galleryIds']);
-            placeTemplate('gallery-template', $gallery, array('colsQ' => 6, 'class' => 'musicGal'));
-        endif;
-    endwhile;
-}*/
+function placePicGal($galleryArr, $naviId) {
 
-function placePicGal($galleryArr) {
+    if(isset($galleryArr['pageQ'])){
+        $naviPagesQ = array_pop($galleryArr);
+    }
+
     foreach($galleryArr as $gallery){
         placeTemplate('gallery-template', $gallery, array('colsQ' => 6, 'class' => 'musicGal'));
     }
+
+    if(isset($naviPagesQ)){
+        echo "<ul id='{$naviId}' class='pageNavi' data-page-quantity='{$naviPagesQ}'></ul>";
+    }
+
 }
 
 /**
- * @param string $postType
- * @param integer $imgPerPage
- * @param integer $page
+ * @param string $postType Custom post type (or default) where to find the galleries entries
+ * @param integer $imgPerPage The maximum number of images per page
+ * @param integer $page The page that you want to retrieve based on the $imgPerPage
+ * @param boolean $getPageQ Determines if the number of pages for the whole set of galleries is returned (Loops till last item)
  * @return array
  * */
-function getGalleries($postType = 'post', $imgPerPage = 0, $page = 1) {
+function getGalleries($postType = 'post', $imgPerPage = 0, $page = 1, $getPageQ = false) {
     $galleries = array();
     $startRange = $page * $imgPerPage - $imgPerPage;
     $endRange = $startRange + $imgPerPage;
     $rangeLength = $imgPerPage;
+    $totalImgQ = 0;
+    $skip = false;
 
     query_posts(array('post_type' => $postType));
     while (have_posts()):
@@ -200,20 +202,34 @@ function getGalleries($postType = 'post', $imgPerPage = 0, $page = 1) {
             $galIds = explode(',', $data['galleryIds']);
 
             $galImgQ = count($galIds);
+            $totalImgQ += $galImgQ;
 
-            if($startRange < $galImgQ){
-                $galIds = array_splice($galIds, $startRange, $rangeLength);
-                $galleries[] = createGalleryObj($galIds, $galTitle);
-                if($endRange > $galImgQ){
-                    $endRange -= $galImgQ;
-                    $startRange = 0;
-                    $rangeLength = $endRange;
-                }else{
-                    break;
+            if(!$skip){
+
+                if($startRange < $galImgQ){
+                    $galIds = array_splice($galIds, $startRange, $rangeLength);
+                    $galleries[] = createGalleryObj($galIds, $galTitle);
+                    if($endRange > $galImgQ){
+                        $endRange -= $galImgQ;
+                        $startRange = 0;
+                        $rangeLength = $endRange;
+                    }else{
+                        if($getPageQ){
+                            $skip = true;
+                        }else{
+                            break;
+                        }
+                    }
                 }
+
             }
+
         endif;
     endwhile;
+
+    if($getPageQ){
+        $galleries['pageQ'] = ceil($totalImgQ / $imgPerPage);
+    }
 
     return $galleries;
 }
@@ -291,6 +307,8 @@ function sanitize($imput,$mode="txt")  {
             break;
 
     }
+
+    return false;
 }
 
 # Sizes

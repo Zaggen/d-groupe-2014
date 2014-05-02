@@ -13,7 +13,7 @@ foreach($data as $img):
     if($i == 0)
         echo '<div class="grid_12 galleryRow">';
 
-    echo '<div class="grid_2">
+    echo '<div class="grid_2 galItem">
             <a href="'.$img['fullImg'].'" title="'.$img['title'].'" class="'.$class.'">
                 <img src="'.$img['thumbnail'].'" class="galleryThumb"/>
             </a>

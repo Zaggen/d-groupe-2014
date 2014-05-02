@@ -20,8 +20,8 @@
         <li class="gallery">
            <div class="grid_11">
            <?php
-           $galleries = getGalleries('musical', 14, 1);
-           placePicGal($galleries);
+           $galleries = getGalleries('musical', 18, 1, true);
+           placePicGal($galleries, 'musicGalNavi');
            ?>
            </div>
         </li>

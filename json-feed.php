@@ -5,6 +5,8 @@
 
 header('content-type: application/json; charset=ISO-8859-1');
 
+$page = (isset($page)) ? $page : $_REQUEST['page'];
+
 query_posts(array('post_type' => 'noticia', 'posts_per_page' => '3', 'paged' => $page));
 if(have_posts()):
     $newsArray = array();

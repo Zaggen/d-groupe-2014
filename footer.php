@@ -8,10 +8,24 @@
 </footer>
 </body>
 <?php wp_footer() ?>
-<script src="<?php stylesheetUri(); ?>js/underscore-min.js"></script>
-<script src="<?php stylesheetUri(); ?>js/jquery.js"></script>
-<script src="<?php stylesheetUri(); ?>js/backbone.js"></script>
-<script src="<?php stylesheetUri(); ?>js/drag-slider.js"></script>
-<script src="<?php stylesheetUri(); ?>js/jquery.colorbox-min.js"></script>
-<script src="<?php stylesheetUri(); ?>js/d-groupe.js"></script>
+<!-- Minify all the app files, and use cdn for libs on production-->
+
+<!-- Libs -->
+<script src="<?php stylesheetUri(); ?>js/lib/underscore-min.js"></script>
+<script src="<?php stylesheetUri(); ?>js/lib/jquery.js"></script>
+<script src="<?php stylesheetUri(); ?>js/lib/backbone.js"></script>
+<script src="<?php stylesheetUri(); ?>js/lib/drag-slider.js"></script>
+<script src="<?php stylesheetUri(); ?>js/lib/jquery.colorbox-min.js"></script>
+<script src="<?php stylesheetUri(); ?>js/src/main.js"></script>
+<!-- Models-->
+<script src="<?php stylesheetUri(); ?>js/src/models/news.js"></script>
+<!-- Views -->
+<script src="<?php stylesheetUri(); ?>js/src/views/navigator.js"></script>
+<script src="<?php stylesheetUri(); ?>js/src/views/collection.js"></script>
+<script src="<?php stylesheetUri(); ?>js/src/views/news.js"></script>
+<script src="<?php stylesheetUri(); ?>js/src/views/pagination.js"></script>
+<script src="<?php stylesheetUri(); ?>js/src/views/gallery.js"></script>
+<script src="<?php stylesheetUri(); ?>js/src/views/contact.js"></script>
+<!-- Router -->
+<script src="<?php stylesheetUri(); ?>js/src/routers/app.js"></script>
 </html>

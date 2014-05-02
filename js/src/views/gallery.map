@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "gallery.js",
+  "sourceRoot": "",
+  "sources": [
+    "gallery.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,MAAA,aAAA;IAAA;mSAAA;;AAAA,EAAA,IAAA,sDAAO,SAAS,MAAhB,CAAA;;AAAA,EACA,OAAA,GAAU,IAAI,CAAC,OADf,CAAA;;AAAA,EAGM,OAAO,CAAC,KAAK,CAAC;AAApB,8BAAA,CAAA;;;;KAAA;;mBAAA;;KAAoC,OAAO,CAAC,KAAK,CAAC,cAHlD,CAAA;AAAA"
+}

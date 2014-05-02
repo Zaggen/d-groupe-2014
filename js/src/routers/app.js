@@ -120,6 +120,15 @@
           return _this.updateRouteNav(path);
         };
       })(this));
+      $('#mainSlider .slider').on('mouseenter', '>li', (function(_this) {
+        return function(e) {
+          var index, path;
+          index = $(e.currentTarget).index();
+          path = _this.slideRoutes.mainSlider[index];
+          console.log('path is ' + path);
+          return _this.updateRouteNav(path);
+        };
+      })(this));
       return $(document).bind('onSlide', (function(_this) {
         return function(e, index, sliderId) {
           if (_this.slideRoutes[sliderId][index] !== 'undefined') {

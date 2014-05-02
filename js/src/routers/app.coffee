@@ -75,6 +75,12 @@ class Dgroupe.Routers.Router extends Backbone.Router
       path = '/' + if sectionName isnt undefined then sectionName else ''
       @updateRouteNav(path)
 
+    $('#mainSlider .slider').on 'mouseenter', '>li', (e)=>
+      index = $(e.currentTarget).index()
+      path = @slideRoutes.mainSlider[index]
+      console.log 'path is ' + path
+      @updateRouteNav(path)
+
     # Event listener for all sliders, when one slides it will
     # trigger a url update using the navigate from backbone
     $(document).bind 'onSlide', (e, index, sliderId)=>

@@ -14,28 +14,59 @@
 
     function contact() {
       this.contactHandler = __bind(this.contactHandler, this);
+      this.getToken = __bind(this.getToken, this);
       return contact.__super__.constructor.apply(this, arguments);
     }
 
     contact.prototype.el = '#mainContact';
 
-    contact.prototype.initialize = function() {
-      return this.$alert = $(this.$el.parent().find('.alert'));
+    contact.prototype.initialize = function(options) {
+      this.$alert = $(this.$el.parent().find('.alert'));
+      return this.formUrl = this.$el.attr('action');
     };
 
     contact.prototype.events = {
-      'submit': 'contactHandler'
+      'submit': 'contactHandler',
+      'change input.name': 'getToken'
+    };
+
+    contact.prototype.getToken = function(e) {
+      var val;
+      if (this.formUrl !== '') {
+        val = $(e.currentTarget).val();
+        if (val !== '') {
+          return $.get(this.formUrl, {
+            'action': 'getToken',
+            'tokenString': val
+          }, (function(_this) {
+            return function(response) {
+              console.log(response.token);
+              return _this.setTokenField(response.token);
+            };
+          })(this));
+        }
+      }
+    };
+
+    contact.prototype.setTokenField = function(token) {
+      var $tokenInput;
+      console.log('setting token to ' + token);
+      $tokenInput = $(this.$el.find('input[name="token"]'));
+      $tokenInput.val(token);
+      return this;
     };
 
     contact.prototype.contactHandler = function(e) {
       e.preventDefault();
-      return this.sendForm(this.$el.serialize());
+      if (this.formUrl !== '') {
+        return this.sendForm(this.$el.serialize());
+      }
     };
 
     contact.prototype.sendForm = function(data) {
       return $.ajax({
-        type: "POST",
-        url: this.$el.attr('action'),
+        type: 'POST',
+        url: this.formUrl,
         data: data,
         success: (function(_this) {
           return function(response) {

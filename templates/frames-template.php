@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container fastFadeIn">
     <div id="canalOnFrame" class="sectionFrames"><span class="SectionLabel">Canal On</span>
 
         <div id="frameOnSldr" class="sliderViewport">
@@ -10,11 +10,12 @@
                 while(have_posts()):
                     if(have_posts()): the_post();
                         $imgUrl = getThumbUrl('onFrame');
+                        $route = str_replace('on','canal-on', getRoute());
 
                         #Only create <li> if there is a featured image assigned to the on entry (default wp img)
                         if(strpos($imgUrl, 'default') == false){
                             echo '<li>';
-                            echo '<a href="'. getRoute() . '" class="route">';
+                            echo "<a href='{$route}' class='route'>";
                                 echo '<img src="' . $imgUrl . '"/>';
                             echo '</a>';
                             echo '</li>';
@@ -26,58 +27,72 @@
             </ul>
         </div>
     </div>
-    <div id="canalMusicalFrame" class="sectionFrames"><span class="SectionLabel">Musical</span>
 
-        <div id="frameMusicSldr" class="sliderViewport">
-            <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
-            <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
-            <ul class="slider">
-                <?php
-                $config = array(
-                    'postType' => 'musical',
-                    'slug' => 'fotos',
-                    'limit' => 4,
-                    'thumbSize' => 'musicFrame'
-                );
-                galFrameSliderItems($config);
-                ?>
-            </ul>
-        </div>
-    </div>
-    <div id="canalCorpFrame" class="sectionFrames"><span class="SectionLabel">Corporativo</span>
+    <?php
+    $imgPerPage = 4;
+    $framesConf = array(
+        array(
+            'prefix' => 'corp',
+            'galConf' => array(
+                'from' => 'canal-corporativo',
+                'thumbSize' => 'corpFrame',
+                'imgPerPage' => $imgPerPage
+            )
+        ),
+        array(
+            'prefix' => 'Music',
+            'galConf' => array(
+                'from' => 'canal-musical',
+                'thumbSize' => 'musicFrame',
+                'imgPerPage' => $imgPerPage
+            )
+        ),
+        array(
+            'prefix' => 'corp',
+            'galConf' => array(
+                'from' => 'canal-corporativo',
+                'thumbSize' => 'corpFrame',
+                'imgPerPage' => $imgPerPage
+            )
+        ),
+        array(
+            'prefix' => 'Events',
+            'galConf' => array(
+                'from' => 'canal-eventos',
+                'thumbSize' => 'eventsFrame',
+                'imgPerPage' => $imgPerPage
+            )
+        )
+    );
 
-        <div id="frameCorpSldr" class="sliderViewport">
-            <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
-            <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
-            <ul class="slider">
-                <?php
-                $config = array(
-                    'postType' => 'corporativo',
-                    'slug' => 'fotos',
-                    'limit' => 4,
-                    'thumbSize' => 'corpFrame'
-                );
-                galFrameSliderItems($config);
-                ?>
-            </ul>
-        </div>
-    </div>
-    <div id="eventosFrame" class="sectionFrames"><span class="SectionLabel">Eventos</span>
+    foreach ($framesConf as $frameConf): extract($frameConf);
+        $label = ucfirst( str_replace('canal-', '', $galConf['from']) );
+        ?>
 
-        <div id="frameEventsSldr" class="sliderViewport">
-            <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
-            <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
-            <ul class="slider">
-                <?php
-                $config = array(
-                    'postType' => 'eventos',
-                    'slug' => 'fotos',
-                    'limit' => 4,
-                    'thumbSize' => 'eventsFrame'
-                );
-                galFrameSliderItems($config);
-                ?>
-            </ul>
+        <div id="canal<?= $prefix; ?>Frame" class="sectionFrames"><span class="SectionLabel"><?= $label; ?></span>
+
+            <div id="frame<?= $prefix; ?>Sldr" class="sliderViewport">
+                <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
+                <div class="sliderBtn nextBtn"><i class="fa fa-angle-right"></i></div>
+                <ul class="slider">
+
+                    <?php
+                    $galItems = getGalleryItems($galConf);
+                    if(count($galItems) > 0):
+                        foreach($galItems as $img): ?>
+                            <li>
+                                <a href="portafolio/<?= $galConf['from']; ?>" class="route">
+                                    <img src="<?= $img['thumbnail']; ?>" alt=""/>
+                                </a>
+                            </li>
+                    <?php
+                        endforeach;
+                    endif;
+                    ?>
+                </ul>
+            </div>
         </div>
-    </div>
-</div>
+
+    <?php
+    endforeach;
+    ?>

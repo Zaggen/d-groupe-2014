@@ -1,4 +1,4 @@
-<section id="homeSection" class="pageSection">
+<section id="homeSection" class="pageSection sm_hidden">
     <section id="mainSlider" class="sliderViewport">
         <!-- Left-Right buttons to navigate back and forward in the slider-->
         <div class="sliderBtn prevBtn"><i class="fa fa-angle-left"></i></div>
@@ -18,15 +18,23 @@
                 <?php placeTemplate('news-template'); ?>
             </li>
         </ul>
-        <!-- Buttons at the bottom of the slider to navigate to the corresponding slide--></section>
-    <!-- ul.navigator//li.navBullet.selectedBullet
-    //li.navBullet--><!-- li.navBullet-->
-    <footer class="BrandsFooter">
+    </section>
+    <footer class="BrandsFooter sm_hidden">
         <div class="container">
             <figure class="partnersLogos kukaramakaraLogo"></figure>
             <figure class="partnersLogos lussacLogo"></figure>
-            <figure class="partnersLogos sixxtinaLogo"></figure>
+            <figure class="partnersLogos sixttinaLogo"></figure>
             <figure class="partnersLogos delaireLogo"></figure>
         </div>
     </footer>
+</section>
+
+<?php
+$id = getIdFromSlug('mobile-home');
+$post = get_post($id);
+$content = apply_filters('the_content', $post->post_content);
+?>
+
+<section id="mobilHome" class="portfolioSection">
+    <?php if(!empty($content)) echo  $content; ?>
 </section>

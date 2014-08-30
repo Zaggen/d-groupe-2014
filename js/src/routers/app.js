@@ -18,12 +18,13 @@
     Router.prototype.routes = {
       '(/)': 'home',
       'redes(/)': 'social',
+      'noticia/:entrySlug(/)': 'singleNews',
       'noticias(/)': 'news',
       'contacto(/)': 'contact',
-      'portafolio/on(/:slide)(/)': 'onSection',
-      'portafolio/musical(/:slide)(/)': 'musicSection',
-      'portafolio/corporativo(/:slide)(/)': 'corpSection',
-      'portafolio/eventos(/:slide)(/)': 'eventsSection'
+      'portafolio/canal-on(/:slide)(/)': 'onSection',
+      'portafolio/canal-musical(/:slide)(/)': 'musicSection',
+      'portafolio/canal-corporativo(/:slide)(/)': 'corpSection',
+      'portafolio/canal-eventos(/:slide)(/)': 'eventsSection'
     };
 
     Router.prototype.initialize = function() {
@@ -34,7 +35,7 @@
 
     Router.prototype.setAppRoutesOBjs = function() {
       var corpPath, eventPath, musicPath, onPath, path, portflRoot;
-      portflRoot = 'portafolio/';
+      portflRoot = 'portafolio/canal-';
       onPath = portflRoot + 'on/';
       musicPath = portflRoot + 'musical/';
       corpPath = portflRoot + 'corporativo/';
@@ -42,7 +43,7 @@
       this.onSlides = ['kukaramakara', 'lussac', 'sixxtina', 'delaire'];
       this.musicSlides = ['fotos', 'videos', 'djs', 'calendario'];
       this.corpSlides = ['fotos', 'videos'];
-      this.eventSlides = ['fotos', 'videos'];
+      this.eventsSlides = ['fotos', 'videos'];
       return this.slideRoutes = {
         mainSlider: ['', 'redes', 'noticias'],
         onSectionSldr: (function() {
@@ -65,9 +66,9 @@
           }
           return _results;
         }).call(this),
-        eventSectionSldr: (function() {
+        eventsSectionSldr: (function() {
           var _i, _len, _ref, _results;
-          _ref = this.eventSlides;
+          _ref = this.eventsSlides;
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             path = _ref[_i];
@@ -89,46 +90,86 @@
     };
 
     Router.prototype.setAppInstances = function() {
-      var $sections;
-      this.news = new Dgroupe.Models.News;
-      this.newsCollection = new Dgroupe.Collections.News;
+      var $sections, gallerieCollections, galleries, galleryName, imgGalleryId, imgGalleryNaviId, lightBox, videoGalleryId, wpPostTerm, _i, _len, _ref;
       this.mainNav = new Dgroupe.Views.navigation;
-      this.newsViewCollection = new Dgroupe.Views.NewsCollection({
+      this.newsCollection = new Dgroupe.Collections.News;
+      this.newsLayout = new Dgroupe.Views.Layout({
+        el: '#newsWrapper'
+      });
+      this.newsView = new Dgroupe.Views.News({
+        itemViewClass: Dgroupe.Views.NewsEntry,
         collection: this.newsCollection
       });
-      this.newsNavi = new Dgroupe.Views.pagination({
-        el: '#newsNavi',
-        collectionView: this.newsViewCollection
+      this.newsNavi = new Dgroupe.Views.Pagination({
+        collection: this.newsCollection,
+        id: 'newsNavi',
+        url: 'noticias'
       });
-      this.backToListBtn = new Dgroupe.Views.ReturnToListBtn({
-        listView: this.newsViewCollection,
-        el: '#backToNewsList',
-        nav: this.newsNavi
-      });
+      this.newsLayout.show([this.newsView, this.newsNavi]);
       this.contact = new Dgroupe.Views.contact;
-      this.musicGalNavi = new Dgroupe.Views.pagination({
-        el: '#musicGalNavi',
-        collectionView: this.newsViewCollection
-      });
+      this.mainLoader = new Dgroupe.Views.MainLoader;
+      _ref = ['kukaramakara', 'lussac', 'sixttina', 'delaire'];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        galleryName = _ref[_i];
+        imgGalleryId = "" + galleryName + "Gal";
+        videoGalleryId = "" + galleryName + "VideoGal";
+        new Dgroupe.Views.SlimGallery({
+          id: imgGalleryId
+        });
+        new Dgroupe.Views.SlimGallery({
+          id: videoGalleryId,
+          mode: 'iframe'
+        });
+      }
+      galleries = {
+        'music': 'canal-musical',
+        'corp': 'canal-corporativo',
+        'events': 'canal-eventos'
+      };
+      gallerieCollections = [];
+      for (galleryName in galleries) {
+        if (!__hasProp.call(galleries, galleryName)) continue;
+        wpPostTerm = galleries[galleryName];
+        imgGalleryId = "" + galleryName + "Gal";
+        imgGalleryNaviId = "" + imgGalleryId + "Navi";
+        videoGalleryId = "" + galleryName + "VideoGal";
+        gallerieCollections[galleryName] = new Dgroupe.Collections.Gallery({
+          urlQuery: "?from=" + wpPostTerm
+        });
+        console.log('galleryName', galleryName);
+        console.log('gallerieCollections', gallerieCollections[galleryName]);
+        new Dgroupe.Views.Gallery({
+          collection: gallerieCollections[galleryName],
+          id: imgGalleryId
+        });
+        new Dgroupe.Views.Pagination({
+          id: imgGalleryNaviId,
+          collection: gallerieCollections[galleryName],
+          updateRoutes: false
+        });
+        new Dgroupe.Views.SlimGallery({
+          id: videoGalleryId,
+          mode: 'iframe'
+        });
+      }
+      lightBox = new Dgroupe.Views.Lightbox;
       $sections = $('body > section:not(#homeSection)');
       $sections.mouseenter((function(_this) {
         return function(e) {
           var $currentSection, path, sectionName;
           $currentSection = $(e.currentTarget);
-          sectionName = $currentSection.attr('id');
+          sectionName = $currentSection.data('slug');
           path = '/' + (sectionName !== void 0 ? sectionName : '');
           return _this.updateRouteNav(path);
         };
       })(this));
-      $('#mainSlider .slider').on('mouseenter', '>li', (function(_this) {
-        return function(e) {
-          var index, path;
-          index = $(e.currentTarget).index();
-          path = _this.slideRoutes.mainSlider[index];
-          console.log('path is ' + path);
-          return _this.updateRouteNav(path);
-        };
-      })(this));
+
+      /*$('#mainSlider .slider').on 'mouseenter', '>li', (e)=>
+        index = $(e.currentTarget).index()
+        path = @slideRoutes.mainSlider[index]
+        console.log 'path is ' + path
+        @updateRouteNav(path)
+       */
       return $(document).bind('onSlide', (function(_this) {
         return function(e, index, sliderId) {
           if (_this.slideRoutes[sliderId][index] !== 'undefined') {
@@ -141,12 +182,10 @@
     };
 
     Router.prototype.navigateOnLoad = function() {
-      var linkTarget;
-      linkTarget = window.location.pathname.replace('/' + Dgroupe.helpers.baseFolder, '').replace('/', '');
-      linkTarget = root.removeTrailingSlash(linkTarget);
-      this.navigate('/');
-      this.navigate(linkTarget, true);
-      return this.mainNav.findCurrentRoute(linkTarget);
+      var route;
+      route = Backbone.history.fragment;
+      this.navigate(route, true);
+      return this.mainNav.findCurrentRoute(route);
     };
 
     Router.prototype.updateRouteNav = function(route) {
@@ -155,25 +194,26 @@
     };
 
     Router.prototype.scrollTo = function(scrollPos, itemToSkip) {
-      var e, navBarOffset, pathFragments, targetEl, targetId, _i, _len;
+      var e, navBarOffset, pathFragments, postRoute, targetEl, _i, _len;
       if (scrollPos === Backbone.history.fragment) {
         pathFragments = scrollPos.split('/').reverse();
         for (_i = 0, _len = pathFragments.length; _i < _len; _i++) {
-          targetId = pathFragments[_i];
-          if (targetId !== itemToSkip && targetId !== '') {
+          postRoute = pathFragments[_i];
+          if (postRoute !== itemToSkip && postRoute !== '') {
             break;
           }
         }
-        targetEl = $('#' + targetId);
+        postRoute = Backbone.history.fragment;
+        targetEl = $("[data-slug='" + postRoute + "']");
         navBarOffset = 125;
         try {
           scrollPos = targetEl.offset().top - navBarOffset;
         } catch (_error) {
           e = _error;
-          if (targetId === '') {
+          if (postRoute === '') {
             console.error("targetId can't be empty, verify you are passing the correct arguments and there is no trailing slash in the url");
           } else {
-            console.error("'#" + targetId + "' seems like an invalid id or there is no such element in the dom \n " + e.message);
+            console.error("data-slug:'" + postRoute + "' seems like an invalid data attribute or there is no such element in the dom \n " + e.message);
           }
         }
       }
@@ -203,24 +243,43 @@
     };
 
     Router.prototype.home = function() {
-      this.scrollTo(0);
+      this.scrollTo(0, null);
       root.sliders.main.slideTo('first');
       this.mainNav.findCurrentRoute('/');
-      return null;
+      return this;
     };
 
     Router.prototype.social = function() {
-      this.scrollTo(0);
+      this.scrollTo(0, null);
       root.sliders.main.slideTo(1);
       this.mainNav.findCurrentRoute('/redes');
-      return null;
+      return this;
     };
 
     Router.prototype.news = function() {
-      this.scrollTo(0);
+      this.scrollTo(0, null);
       root.sliders.main.slideTo('last');
       this.mainNav.findCurrentRoute('/noticias');
-      return null;
+      console.log('@newsView', this.newsView);
+      if (this.newsView.closed != null) {
+        this.newsView = new Dgroupe.Views.News({
+          itemViewClass: Dgroupe.Views.NewsEntry,
+          collection: this.newsCollection
+        });
+        this.newsLayout.show([this.newsView, this.newsNavi]);
+      }
+      return this;
+    };
+
+    Router.prototype.singleNews = function(permalink) {
+      var singleEntry;
+      this.scrollTo(0, null);
+      root.sliders.main.config('emmitEvents', false).slideTo('last').config('emmitEvents', true);
+      singleEntry = new Dgroupe.Views.SingleEntry({
+        model: new Dgroupe.Models.SingleEntry
+      });
+      this.newsLayout.show([singleEntry]);
+      return this;
     };
 
     Router.prototype.onSection = function(slide) {
@@ -236,12 +295,12 @@
     };
 
     Router.prototype.eventsSection = function(slide) {
-      return this.navigateSection(slide, 'event');
+      return this.navigateSection(slide, 'events');
     };
 
     Router.prototype.contact = function() {
-      this.scrollTo(Backbone.history.fragment);
-      return null;
+      this.scrollTo(Backbone.history.fragment, null);
+      return this;
     };
 
     return Router;
@@ -250,7 +309,7 @@
 
   $((function(_this) {
     return function() {
-      root.App = new Dgroupe.Routers.Router();
+      root.app = new Dgroupe.Routers.Router();
       return Backbone.history.start({
         pushState: true,
         root: Dgroupe.helpers.baseFolder
@@ -259,14 +318,14 @@
   })(this));
 
   $(window).load(function() {
-    return App.navigateOnLoad();
+    return root.app.navigateOnLoad();
   });
 
   $('a.route, .portfolioBtn').click(function(e) {
     var linkTarget;
     e.preventDefault();
     linkTarget = $(this).attr('href');
-    return App.navigate(linkTarget, true);
+    return Backbone.history.navigate(linkTarget, true);
   });
 
   $('.fbIcon').click(function(e) {
@@ -280,31 +339,28 @@
     }
   });
 
-  $('.closeBtn').click(function() {
-    var parent;
-    parent = $(this).closest('.socialBlock');
-    return $(parent).find('.fbBlock').addClass('hidden');
-  });
 
-  $('a.gal').has('img').colorbox({
-    maxWidth: '90%',
-    maxHeight: '90%',
-    rel: 'on'
-  });
-
-  $('a.musicGal').has('img').colorbox({
-    maxWidth: '90%',
-    maxHeight: '90%',
-    rel: 'musiGal'
-  });
-
-  $('a.ytGal').has('img').colorbox({
-    maxWidth: '90%',
-    maxHeight: '90%',
-    iframe: true,
-    innerWidth: 540,
-    innerHeight: 346
-  });
+  /*$('.closeBtn').click ->
+    parent = $(this).closest('.socialBlock')
+    $(parent).find('.fbBlock').addClass('hidden')
+  
+  $('a.gal').has('img').colorbox
+    maxWidth: '90%'
+    maxHeight: '90%'
+    rel:'on'
+  
+  $('a.musicGal').has('img').colorbox
+    maxWidth: '90%'
+    maxHeight: '90%'
+    rel:'musiGal'
+  
+  $('a.ytGal').has('img').colorbox
+    maxWidth: '90%'
+    maxHeight: '90%'
+    iframe: yes
+    innerWidth:540
+    innerHeight:346
+   */
 
 }).call(this);
 

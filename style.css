@@ -1,5 +1,6 @@
 /* Variables */
 /* Functions */
+
 /* Reset */
 * {
   margin: 0;
@@ -38,77 +39,80 @@ html[xmlns] .clearfix {
   margin: auto;
   position: relative;
 }
-.container .grid_1 {
+.grind_0, .hidden {
+    display: none!important;
+}
+.grid_1{
   margin: 0 0.5%;
   width: 7.333333333333332%;
   display: block;
   float: left;
 }
-.container .grid_2 {
+.grid_2 {
   margin: 0 0.5%;
   width: 15.666666666666664%;
   display: block;
   float: left;
 }
-.container .grid_3 {
+.grid_3 {
   margin: 0 0.5%;
   width: 24%;
   display: block;
   float: left;
 }
-.container .grid_4 {
+.grid_4 {
   margin: 0 0.5%;
   width: 32.33333333333333%;
   display: block;
   float: left;
 }
-.container .grid_5 {
+.grid_5 {
   margin: 0 0.5%;
   width: 40.66666666666667%;
   display: block;
   float: left;
 }
-.container .grid_6 {
+.grid_6 {
   margin: 0 0.5%;
   width: 49%;
   display: block;
   float: left;
 }
-.container .grid_7 {
+.grid_7 {
   margin: 0 0.5%;
   width: 57.333333333333336%;
   display: block;
   float: left;
 }
-.container .grid_8 {
+.grid_8 {
   margin: 0 0.5%;
   width: 65.66666666666666%;
   display: block;
   float: left;
 }
-.container .grid_9 {
+.grid_9 {
   margin: 0 0.5%;
   width: 74%;
   display: block;
   float: left;
 }
-.container .grid_10 {
+.grid_10 {
   margin: 0 0.5%;
   width: 82.33333333333334%;
   display: block;
   float: left;
 }
-.container .grid_11 {
+.grid_11 {
   margin: 0 0.5%;
   width: 90.66666666666666%;
   display: block;
   float: left;
 }
-.container .grid_12 {
+.grid_12 {
   margin: 0 0.5%;
   width: 99%;
   display: block;
-  float: left;
+  clear: both
 }
 .left {
     float: left!important;
@@ -116,6 +120,245 @@ html[xmlns] .clearfix {
 .right {
     float: right!important;
 }
+
+/* Medium resolution*/
+@media all and (max-width: 1100px) {
+    .md_grid_0, .md_hidden {
+        display: none!important;
+    }
+    .md_grid_1 {
+        margin: 0 0.5%;
+        width: 7.333333333333332%;
+        display: block;
+        float: left;
+    }
+    .md_grid_2 {
+        margin: 0 0.5%;
+        width: 15.666666666666664%;
+        display: block;
+        float: left;
+    }
+    .md_grid_3 {
+        margin: 0 0.5%;
+        width: 24%;
+        display: block;
+        float: left;
+    }
+    .md_grid_4 {
+        margin: 0 0.5%;
+        width: 32.33333333333333%;
+        display: block;
+        float: left;
+    }
+    .md_grid_5 {
+        margin: 0 0.5%;
+        width: 40.66666666666667%;
+        display: block;
+        float: left;
+    }
+    .md_grid_6 {
+        margin: 0 0.5%;
+        width: 49%;
+        display: block;
+        float: left;
+    }
+    .md_grid_7 {
+        margin: 0 0.5%;
+        width: 57.333333333333336%;
+        display: block;
+        float: left;
+    }
+    .md_grid_8 {
+        margin: 0 0.5%;
+        width: 65.66666666666666%;
+        display: block;
+        float: left;
+    }
+    .md_grid_9 {
+        margin: 0 0.5%;
+        width: 74%;
+        display: block;
+        float: left;
+    }
+    .md_grid_10 {
+        margin: 0 0.5%;
+        width: 82.33333333333334%;
+        display: block;
+        float: left;
+    }
+    .md_grid_11 {
+        margin: 0 0.5%;
+        width: 90.66666666666666%;
+        display: block;
+        float: left;
+    }
+    .md_grid_12 {
+        margin: 0 0.5%;
+        width: 99%;
+        display: block;
+        clear: both
+    }
+}
+
+@media all and (max-width: 850px) {
+    .sm_grid_0, .sm_hidden {
+        display: none!important;
+    }
+    .sm_grid_1 {
+        display: none;
+    }
+    .sm_grid_1 {
+        margin: 0 0.5%;
+        width: 7.333333333333332%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_2 {
+        margin: 0 0.5%;
+        width: 15.666666666666664%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_3 {
+        margin: 0 0.5%;
+        width: 24%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_4 {
+        margin: 0 0.5%;
+        width: 32.33333333333333%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_5 {
+        margin: 0 0.5%;
+        width: 40.66666666666667%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_6 {
+        margin: 0 0.5%;
+        width: 49%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_7 {
+        margin: 0 0.5%;
+        width: 57.333333333333336%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_8 {
+        margin: 0 0.5%;
+        width: 65.66666666666666%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_9 {
+        margin: 0 0.5%;
+        width: 74%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_10 {
+        margin: 0 0.5%;
+        width: 82.33333333333334%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_11 {
+        margin: 0 0.5%;
+        width: 90.66666666666666%;
+        display: block;
+        float: left;
+    }
+    .sm_grid_12 {
+        margin: 0 0.5%;
+        width: 99%;
+        display: block;
+        clear: both
+    }
+}
+
+@media all and (max-width: 600px) {
+    .xsm_grid_0, .xsm_hidden {
+        display: none!important;
+    }
+    .xsm_grid_1 {
+        margin: 0 0.5%;
+        width: 7.333333333333332%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_2 {
+        margin: 0 0.5%;
+        width: 15.666666666666664%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_3 {
+        margin: 0 0.5%;
+        width: 24%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_4 {
+        margin: 0 0.5%;
+        width: 32.33333333333333%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_5 {
+        margin: 0 0.5%;
+        width: 40.66666666666667%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_6 {
+        margin: 0 0.5%;
+        width: 49%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_7 {
+        margin: 0 0.5%;
+        width: 57.333333333333336%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_8 {
+        margin: 0 0.5%;
+        width: 65.66666666666666%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_9 {
+        margin: 0 0.5%;
+        width: 74%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_10 {
+        margin: 0 0.5%;
+        width: 82.33333333333334%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_11 {
+        margin: 0 0.5%;
+        width: 90.66666666666666%;
+        display: block;
+        float: left;
+    }
+    .xsm_grid_12 {
+        margin: 0 0.5%;
+        width: 99%;
+        display: block;
+        clear: both
+    }
+}
+
 body {
   font-family: "Open Sans", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -133,13 +376,18 @@ body {
   z-index: 999;
   background-color: #170a1b;
   border-bottom: 7px solid #0e0610;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 #mainLogo {
-  background: url("imgs/main-logo.png") no-repeat;
-  width: 230px;
-  height: 55px;
-  float: left;
-  margin: 23px 0 0 43px;
+    width: 230px;
+    height: 55px;
+    max-width: 80%;
+    max-height: 70%;
+    float: left;
+    margin: 23px 0 0 43px;
+    background: url("imgs/main-logo.png") no-repeat;
+    background-size: contain;
 }
 .pageSection,
 .portfolioSection {
@@ -149,17 +397,18 @@ body {
 .pageSection h2 {
     font-size: 2.28em;
     margin-bottom: 0.22em;
+    text-transform: capitalize;
 }
 .portfolioSection h3{
     font-size: 22px;
     margin: 10px 0 20px;
 }
 /* Navigation bar Styles */
-#navBar {
+#mainNav {
   display: block;
   float: right;
 }
-#navBar li {
+#mainNav li {
   display: inline-block !important;
   min-width: 40px;
   text-align: center;
@@ -167,12 +416,12 @@ body {
   position: relative;
   color: #fff;
 }
-#navBar li:hover {
+#mainNav li:hover {
   background-color: rgba(255,255,255,0.11);
   box-shadow: 0 6px 13px rgba(0,0,0,0.5) inset;
 }
-#navBar li a,
-#navBar .mainLvl {
+#mainNav li a,
+#mainNav .mainLvl {
   color: #fff !important;
   font-size: 1.0769em;
   padding: 37px 20px;
@@ -183,30 +432,182 @@ body {
   background-color: rgba(46, 24, 53, 0.68);
   box-shadow: 0 6px 13px rgba(0,0,0,0.5) inset;
 }
-#navBar .mainLvl:hover .subLvl {
+#mainNav .mainLvl:hover .subLvl {
   display: block;
 }
-#navBar .subLvl {
+#mainNav .subLvl {
   position: absolute;
   display: none;
   background-color: #0c070e;
   top: 91px;
   left: 0;
 }
-#navBar .subLvl li {
+#mainNav .subLvl li {
   width: 100%;
 }
-#navBar .subLvl li a {
+#mainNav .subLvl li a {
   display: block;
   width: 100%;
   padding: 12px 0;
   font-size: 0.82em;
 }
+
+#mobilHome {
+    margin-top: 90px;
+    display: none;
+}
+
+@media (max-width: 850px) {
+    body {
+        border-top: none;
+    }
+    #mainHeader {
+        height: 50px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+        border-bottom: transparent;
+    }
+    #mainLogo {
+        position: fixed;
+        height: 36px;
+        width: 151px;
+        left: 50%;
+        margin: 7px 0 0 -75px;
+    }
+    #mainNav {
+        height: 50px;
+        width: 100%;
+        top: 0;
+        margin: 0;
+        overflow: hidden;
+        box-shadow: 0 0 4px rgba(78,78,78,0.55);
+    }
+    #mainNav ul#mainMenu {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        width: 100%;
+        z-index: 99999999999999999;
+        background: #0E0810;
+    }
+    #mainNav li {
+        display: block !important;
+        margin: 0;
+    }
+    #mainNav li a,
+    #mainNav .mainLvl {
+        padding: 22px 0;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.46) inset;
+    }
+    #mobileNavBar {
+        display: block;
+        height: 50px;
+        padding: 0 12px;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .iconMenu {
+        width: 25px;
+        height: 39px;
+        cursor: pointer;
+        top: 50%;
+        position: absolute;
+        margin-top: -20px;
+    }
+    .openMenu {
+        height: auto !important;
+    }
+    .iconMenuStripes {
+        display: block;
+        height: 3px;
+        width: inherit;
+        background: #fff;
+        position: absolute;
+        top: 19px;
+    }
+    .iconMenuStripes:before,
+    .iconMenuStripes:after {
+        content: '';
+        display: block;
+        height: 3px;
+        background: #fff;
+        margin: 11px 0;
+    }
+    .iconMenuStripes:before {
+        margin-top: -7px;
+    }
+    #mainNav .current_page_item {
+        background-color: #2B1B2F !important;
+        box-shadow: 4em 0 0 #59465E, -4em 0 0 #908593 !important;
+    }
+    #mainNav li:hover {
+        box-shadow: none;
+    }
+    #mainNav li a:hover {
+        background-color: rgba(241, 241, 241, 1) !important;
+        box-shadow: 4em 0 0 rgba(241, 241, 241, 1), -4em 0 0 rgba(241, 241, 241, 1) !important;
+        color: #2B1B2F!important;
+    }
+    #mainContent {
+        margin-top: 40px;
+    }
+
+    #mainNav .subLvl {
+        background-color: #19101D;
+        top: 64px;
+        left: 0;
+        width: 100%;
+        z-index: 9;
+    }
+
+    #mainNav .subLvl li a {
+        padding: 18px 0;
+    }
+
+    .prevBtn {
+        left: 2%;
+    }
+    .nextBtn {
+        right: 2%;
+    }
+
+    #mainNav .hideInMobile {
+        display: none!important;
+    }
+
+    #mobilHome {
+        display: block;
+    }
+}
+@media all and (max-width: 500px){
+    #logoTitle {
+        font-size: 27px;
+        width: 70%;
+        margin-top: 3px;
+        margin-left: 15%;
+    }
+}
 /* Slider Styles */
 
+.sliderViewport .slider>li{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .sliderViewport {
-    width: 100%;
     height: auto;
+    /*width: 100%; Does not seems to be necessary */
     min-height: inherit;
     position: relative;
     overflow: hidden;
@@ -237,7 +638,7 @@ body {
     min-width: 100%;
     height: auto;
     overflow: hidden;
-    margin-left: 0;
+    left: 0;
     top: 0;
 }
 .transition_1sec {
@@ -252,7 +653,6 @@ body {
     width: 100%;
     min-height: 1%; /* Default is auto */
     float: left;
-    cursor: col-resize;
 }
 #secondSlider .slider>li {
     background-color: #556;
@@ -289,44 +689,11 @@ body {
     user-select: none;
 }
 .prevBtn {
-    left: 13px;
-}
-.prevBtn .fa-angle-left {
-    margin-left: -5px;
+    left: 8%;
 }
 .nextBtn {
-    right: 13px;
+    right: 8%;
 }
-.nextBtn .fa-angle-right {
-    margin-right: -5px;
-}
-/*
-Not used in this page so far - If used, change the class of the navigator btsn from all sections
-.navigator {
-    width: 100%;
-    position: absolute;
-    bottom: 0px;
-    text-align: center;
-}
-.navigator .navBullet {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    background-color: rgba(169, 169, 169, 0.57);
-    margin: 0px 2px 1.5%;
-    cursor: pointer;
-    box-shadow: 0 0 7px rgba(0, 0, 0, 0.35) inset;
-    -webkit-border-radius: 56px;
-    -moz-border-radius: 56px;
-    -o-border-radius: 56px;
-    -ms-border-radius: 56px;
-    border-radius: 50%;
-    *//* box-shadow: 1px 1px 0 #cac9c9,-1px -1px 0 #cac9c9,1px -1px #cac9c9,-1px 1px #cac9c9; *//*
-    border: 2px solid white;
-}
-.navigator .selectedBullet {
-    background-color: rgba(0, 0, 0, 0.5)!important;
-}*/
 
 /* Slider transitions */
 .trans_point8Sec{
@@ -361,15 +728,16 @@ Not used in this page so far - If used, change the class of the navigator btsn f
   -o-border-radius: 1px;
   -ms-border-radius: 1px;
   border-radius: 1px;
+  overflow: hidden;
 }
 .SectionLabel {
-  min-width: 130px;
+  min-width: 110px;
   min-height: 5px;
   padding: 10px 5px;
   display: block;
   position: absolute;
   top: 11px;
-  left: -18px;
+  left: 0;
   z-index: 10;
   background-color: #170a1b;
   color: #fff;
@@ -424,7 +792,6 @@ Not used in this page so far - If used, change the class of the navigator btsn f
   width: 100%;
   height: 100%;
   margin: auto;
-  background-color: #f5f5dc;
 }
 #canalOnFrame {
   width: 363px;
@@ -432,7 +799,7 @@ Not used in this page so far - If used, change the class of the navigator btsn f
   top: 72px;
   left: 140px;
 }
-#canalMusicalFrame {
+#canalMusicFrame {
   width: 369px;
   height: 237px;
   top: 142px;
@@ -444,14 +811,15 @@ Not used in this page so far - If used, change the class of the navigator btsn f
   top: 410px;
   left: 151px;
 }
-#eventosFrame {
+#canalEventsFrame {
   width: 344px;
   height: 238px;
   top: 410px;
   right: 119px;
 }
-#eventosFrame .SectionLabel {
-  left: 221px;
+#canalEventsFrame .SectionLabel {
+    right: 0;
+    left: initial;
 }
 .homeSectionTitle {
   text-align: right;
@@ -660,16 +1028,8 @@ Not used in this page so far - If used, change the class of the navigator btsn f
   display: block !important;
 }
 #newsWrapper {
-  margin-bottom: 15px;
-  padding: 5px 9px;
-  background-color: rgba(255,255,255,0.36);
-  overflow: hidden;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -ms-border-radius: 5px;
-  border-radius: 5px;
-  cursor: pointer;
+    padding: 5px 9px;
+    cursor: default;
 }
 #newsWrapper .entry,
 #newsWrapper .fullEntry {
@@ -697,6 +1057,7 @@ Not used in this page so far - If used, change the class of the navigator btsn f
 #newsWrapper .entry .entryTitle {
   font-size: 15px;
   margin-bottom: 8px;
+  color: #350528;
 }
 #newsWrapper .entryThumb {
   width: 182px;
@@ -704,10 +1065,6 @@ Not used in this page so far - If used, change the class of the navigator btsn f
   overflow: hidden;
   float: left;
   margin-right: 15px;
-}
-#newsWrapper .entryThumb img {
-  width: 100%;
-  max-height: 110%;
 }
 #newsWrapper .publishDate {
   position: absolute;
@@ -737,33 +1094,32 @@ Not used in this page so far - If used, change the class of the navigator btsn f
 #newsWrapper .fullEntry {
   height: 520px;
 }
+#newsWrapper .entryBody {
+    overflow-y: scroll;
+    padding: 1rem 1rem;
+    height: 430px;
+    margin: 0 12px;
+}
 #newsWrapper .fullEntry .entryTitle {
   text-align: center;
   font-size: 18px;
 }
 #newsWrapper .fullEntry .entryThumb {
   max-width: 50%;
-  max-height: 220px;
+  max-height: 270px;
   width: auto;
   height: auto;
   overflow: hidden;
-  margin: 5px auto;
+  margin: 12px auto;
   float: none;
 }
-#newsWrapper .fullEntry .entryThumb img {
-  max-width: 100%;
-  max-height: 150%;
-}
-.entryContent {
-    overflow-y: scroll;
-    padding: 22px 50px;
-    height: 227px;
-}
+
 .pageNavi {
   width: 100%;
   position: relative;
   margin-top: 10px;
   text-align: center;
+  clear: both;
 }
 .pageNavi li,
 .backToList {
@@ -784,14 +1140,10 @@ Not used in this page so far - If used, change the class of the navigator btsn f
   background-color: #350528 !important;
   border: 1px solid #260129 !important;
 }
-.backToList {
-    position: relative;
-    left: 50%;
-    width: 200px;
-    margin-left: -100px;
-}
 .hidden {
-  display: none;
+    opacity: 0!important;
+    visibility: hidden!important;
+    display: none;
 }
 /* Home Footer */
 .BrandsFooter {
@@ -804,7 +1156,7 @@ Not used in this page so far - If used, change the class of the navigator btsn f
   display: inline-block;
   height: 112px;
   max-height: 100%;
-  margin: 0 41px;
+  margin: 0 30px;
 }
 .kukaramakaraLogo {
   width: 99px;
@@ -826,9 +1178,8 @@ Not used in this page so far - If used, change the class of the navigator btsn f
 /* Portafolio Sections general Styles */
 .portfolioSection,
 #contacto {
-    min-height: 433px;
-    width: 92%;
-    padding: 43px 4%;
+    width: 76%;
+    padding: 43px 9%;
     margin: 55px auto;
     background: #fff;
     -webkit-border-radius: 5px;
@@ -928,6 +1279,12 @@ ul.portfolioBtns li {
 .contactBtn:after {
   content: "Contacto";
 }
+@media all and (min-width: 1100px) and (max-width: 1213px){
+    .contactBlock.right {
+        width: 31%;
+    }
+}
+
 /* Canal On Btns */
 .portfolioPlaceBtn {
   width: 93px;
@@ -979,6 +1336,13 @@ ul.portfolioBtns li {
 .delaireBtn.selected:before {
     background-position: -255px -56px;
 }
+@media all and (max-width: 800px){
+    ul.portfolioBtns {
+        text-align: left;
+    }
+}
+
+
 /* End Canal On Btns */
 .portfolioBtns .selected {
   background-color: #170a1b;
@@ -988,10 +1352,10 @@ ul.portfolioBtns li {
 .portfolioBtns .selected:before {
   color: #fff !important;
 }
-.portfolioSection .sliderViewport {
+.portfolioSection > .sliderViewport {
   max-width: 100%;
 }
-.portfolioSection .sliderViewport .sliderBtn {
+.portfolioSection > .sliderViewport .sliderBtn {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -o-border-radius: 5px;
@@ -1006,7 +1370,7 @@ ul.portfolioBtns li {
   padding: 11px 0;
   font-size: 25px;
 }
-.portfolioSection .sliderViewport .nextBtn {
+.portfolioSection > .sliderViewport:nth-of-type(1) .nextBtn {
   margin-top: 50px;
 }
 /* Musical Calendar Styles */
@@ -1056,8 +1420,15 @@ ul.portfolioBtns li {
   border: 1px solid #dfdfdf;
 }
 /* Gallery Styles  */
+.gallery {
+    margin-bottom: 20px!important;
+}
+.galleryBlock {
+    overflow: hidden;
+}
 .galleryRow {
   margin-bottom: 10px!important;
+  overflow: hidden;
 }
 .galleryThumb {
   width: 100%;
@@ -1074,15 +1445,16 @@ ul.portfolioBtns li {
     font-weight: normal;
     margin: 0px 0 10px 0.5%;
 }
-.galleryRow .galItem {
-    display: inline-block;
-    float: none;
-}
-.gallery .pageNavi {
+
+.galNavi {
     margin-top: 22px;
     padding-top: 10px;
     border-top: 1px solid rgb(223, 223, 223);
     box-shadow: 0 6px 3px -5px rgba(0, 0, 0, 0.28) inset;
+}
+.galItem {
+    min-width: 97px;
+    margin-bottom: 10px;
 }
 /* On : Places styles */
 .ourPlaces {
@@ -1095,28 +1467,209 @@ ul.portfolioBtns li {
   height: 112px;
   margin: 53px auto 0;
 }
-/* Zgn-LightBox */
-.zgnLightBoxOVerlay {
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  background-color: rgba(0,0,0,0.5);
+/* LightBox */
+
+.transitionAll {
+    -moz-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+    -webkit-transition: all 1s;
 }
-.zgnLightBox {
-  max-width: 1500px;
-  max-height: 100%;
-  width: 100%;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  background-color: #fff;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -o-border-radius: 5px;
-  -ms-border-radius: 5px;
-  border-radius: 5px;
+
+#lightBox *, #lightBox *:after, #lightBox *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
 }
+
+#lightBox {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    transform: translateZ(0);
+}
+
+#lightBox .overlay {
+    width: inherit;
+    height: inherit;
+    position: absolute;
+}
+
+.openOverlay {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+#lightBox .window {
+    height: 0;
+    width: 0;
+    max-width: 80%;
+    max-height: 80%;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    border-radius: 5px;
+    margin: 0;
+    z-index: 9999;
+    box-shadow: 0 0 0 9000px rgba(0, 0, 0, 0.5), inset 0 0 0 9000px rgba(0, 0, 0, 0.5);
+}
+.hidden {
+    opacity: 0!important;
+    visibility: hidden!important;
+    display: none;
+}
+
+#lightBox .closeBtn {
+    position: absolute;
+    display: block;
+    width: 3em;
+    height: 3em;
+    border-radius: 43px;
+    font-size: 13px;
+    overflow: hidden;
+    top: -16px;
+    right: 10px;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.61);
+}
+
+#lightBox .closeBtn:before, #lightBox .closeBtn:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -0.847em;
+    margin-left: -.25em;
+    width: .5em;
+    height: 1.694em;
+    border-radius: .2em;
+    background: #000;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+
+}
+
+#lightBox .closeBtn:after {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+
+#lightBox .prevBtn, #lightBox .nextBtn {
+    display: block;
+    position: absolute;
+    top: 50%;
+    margin-top: -62px;
+    cursor: pointer;
+    z-index: 99999;
+    font-size: 124px;
+    color: rgba(46, 24, 53, 1);
+    text-shadow: 0px 0 4px rgba(0, 0, 0, 0.54);
+}
+
+#lightBox .progress {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -2.5em;
+    margin-left: -2.5em;
+    font-size: 8px;
+}
+
+#lightboxContent img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    border-radius: 5px;
+}
+
+#lightBox .legend {
+    width: 26%;
+    height: 100%;
+    float: right;
+    color: #CDCBCB;
+    text-align: justify;
+    word-break: break-word;
+    padding: 0 3%;
+    overflow: hidden;
+}
+
+#lightBox .legend h3 {
+    margin-bottom: 15px;
+}
+
+#lightBox iframe {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+}
+
 /* Dj Styles */
+.djBlockList {
+    border-bottom: 1px solid rgb(230, 230, 230);
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+}
+
+.djBlockList:last-of-type {
+    border: none;
+}
+
+.djBlockList .dj:first-of-type {
+    margin-left: 0;
+}
+
+.djList .partnersLogos {
+    margin: 15px 0;
+    display: block;
+}
+
+.djList .sliderViewport {
+    margin-bottom: 1rem;
+}
+
+.djList .sliderBtn {
+    width: 34px!important;
+    height: 34px!important;
+    top: 40%!important;
+    margin-top: -17px!important;
+    background-color: transparent!important;
+    font-size: 34px!important;
+    color: #170a1b!important;
+    padding: 0!important;
+    -webkit-border-radius: 56px!important;
+    -moz-border-radius: 56px!important;
+    -o-border-radius: 56px!important;
+    -ms-border-radius: 56px!important;
+    border-radius: 56px!important;
+}
+
+.djList .prevBtn{
+    left: 0!important;
+}
+
+
+.djList .nextBtn{
+    right: 0!important;
+}
+
+.djList .slider li{
+    padding: 0 36px;
+}
+
 .djEntry {
   height: 145px;
   border-top: 1px solid #eee;
@@ -1129,7 +1682,7 @@ ul.portfolioBtns li {
 }
 .dj {
   display: inline-block;
-  margin: 0 12px;
+  margin: 0 12px 15px;
   text-align: center;
 }
 .dj figcaption {
@@ -1150,6 +1703,7 @@ ul.portfolioBtns li {
   color: #fff;
   margin: 20px auto;
   width: 274px;
+  max-width: 100%;
   text-align: center;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -1205,75 +1759,19 @@ ul.portfolioBtns li {
     margin: auto;
 }
 
-/*
-    Colorbox Core Style:
-    The following CSS is consistent between example themes and should not be altered.
-*/
-#colorbox, #cboxOverlay, #cboxWrapper{position:absolute; top:0; left:0; z-index:9999; overflow:hidden;}
-#cboxWrapper {max-width:none;}
-#cboxOverlay{position:fixed; width:100%; height:100%;}
-#cboxMiddleLeft, #cboxBottomLeft{clear:left;}
-#cboxContent{position:relative;}
-#cboxLoadedContent{overflow:auto; -webkit-overflow-scrolling: touch;}
-#cboxTitle{margin:0;}
-#cboxLoadingOverlay, #cboxLoadingGraphic{position:absolute; top:0; left:0; width:100%; height:100%;}
-#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
-.cboxPhoto{float:left; margin:auto; border:0; display:block; max-width:none; -ms-interpolation-mode:bicubic;}
-.cboxIframe{width:100%; height:100%; display:block; border:0; padding:0; margin:0;}
-#colorbox, #cboxContent, #cboxLoadedContent{box-sizing:content-box; -moz-box-sizing:content-box; -webkit-box-sizing:content-box;}
-
-/*
-    User Style:
-    Change the following styles to modify the appearance of Colorbox.  They are
-    ordered & tabbed in a way that represents the nesting of the generated HTML.
-*/
-#cboxOverlay{background:url(imgs/colorbox-imgs/overlay.png) repeat 0 0;}
-#colorbox{outline:0;}
-#cboxTopLeft{width:21px; height:21px; background:url(imgs/colorbox-imgs/controls.png) no-repeat -101px 0;}
-#cboxTopRight{width:21px; height:21px; background:url(imgs/colorbox-imgs/controls.png) no-repeat -130px 0;}
-#cboxBottomLeft{width:21px; height:21px; background:url(imgs/colorbox-imgs/controls.png) no-repeat -101px -29px;}
-#cboxBottomRight{width:21px; height:21px; background:url(imgs/colorbox-imgs/controls.png) no-repeat -130px -29px;}
-#cboxMiddleLeft{width:21px; background:url(imgs/colorbox-imgs/controls.png) left top repeat-y;}
-#cboxMiddleRight{width:21px; background:url(imgs/colorbox-imgs/controls.png) right top repeat-y;}
-#cboxTopCenter{height:21px; background:url(imgs/colorbox-imgs/border.png) 0 0 repeat-x;}
-#cboxBottomCenter{height:21px; background:url(imgs/colorbox-imgs/border.png) 0 -29px repeat-x;}
-#cboxContent{background:#fff; overflow:hidden;}
-.cboxIframe{background:#fff;}
-#cboxError{padding:50px; border:1px solid #ccc;}
-#cboxLoadedContent{margin-bottom:28px;}
-#cboxTitle{position:absolute; bottom:4px; left:0; text-align:center; width:100%; color:#949494;}
-#cboxCurrent{position:absolute; bottom:4px; left:58px; color:#949494;}
-#cboxLoadingOverlay{background:url(imgs/colorbox-imgs/loading_background.png) no-repeat center center;}
-#cboxLoadingGraphic{background:url(imgs/colorbox-imgs/loading.gif) no-repeat center center;}
-
-/* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
-#cboxPrevious, #cboxNext, #cboxSlideshow, #cboxClose {border:0; padding:0; margin:0; overflow:visible; width:auto; background:none; }
-
-/* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
-#cboxPrevious:active, #cboxNext:active, #cboxSlideshow:active, #cboxClose:active {outline:0;}
-
-#cboxSlideshow{position:absolute; bottom:4px; right:30px; color:#0092ef;}
-#cboxPrevious{position:absolute; bottom:0; left:0; background:url(imgs/colorbox-imgs/controls.png) no-repeat -75px 0; width:25px; height:25px; text-indent:-9999px;}
-#cboxPrevious:hover{background-position:-75px -25px;}
-#cboxNext{position:absolute; bottom:0; left:27px; background:url(imgs/colorbox-imgs/controls.png) no-repeat -50px 0; width:25px; height:25px; text-indent:-9999px;}
-#cboxNext:hover{background-position:-50px -25px;}
-#cboxClose{position:absolute; bottom:0; right:0; background:url(imgs/colorbox-imgs/controls.png) no-repeat -25px 0; width:25px; height:25px; text-indent:-9999px;}
-#cboxClose:hover{background-position:-25px -25px;}
-
-/*
-  The following fixes a problem where IE7 and IE8 replace a PNG's alpha transparency with a black fill
-  when an alpha filter (opacity change) is set on the element or ancestor element.  This style is not applied to or needed in IE9.
-  See: http://jacklmoore.com/notes/ie-transparency-problems/
-*/
-.cboxIE #cboxTopLeft,
-.cboxIE #cboxTopCenter,
-.cboxIE #cboxTopRight,
-.cboxIE #cboxBottomLeft,
-.cboxIE #cboxBottomCenter,
-.cboxIE #cboxBottomRight,
-.cboxIE #cboxMiddleLeft,
-.cboxIE #cboxMiddleRight {
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
+@media all and (max-width: 750px){
+    #contacto .contactDetails {
+        width: 50%;
+        margin: 30px auto 0;
+        clear: both;
+        float: none;
+    }
+    #contacto .contactForm {
+        max-width: 100%;
+        margin: 30px auto 0;
+        clear: both;
+        float: none;
+    }
 }
 
 @media all and (min-width: 1000px) {
@@ -1281,4 +1779,218 @@ ul.portfolioBtns li {
         background: url("imgs/bg.png") no-repeat;
         background-position: 62% 4%;
     }
+}
+
+/**
+ * (C)Leanest CSS spinner ever
+ */
+
+
+@keyframes spin {
+    to {
+        -webkit-transform: rotate(1turn);
+    }
+}
+
+.progress {
+    position: absolute;
+    display: inline-block;
+    width: 5em;
+    height: 5em;
+    margin: 0 .5em;
+    font-size: 12px;
+    text-indent: 999em;
+    overflow: hidden;
+    -webkit-animation: spin 1s infinite steps(8);
+    -moz-animation: spin 1s infinite steps(8);
+    animation: spin 1s infinite steps(8);
+    top: 50%;
+    left: 50%;
+    margin-top: -2.5em;
+    margin-left: -2.5em;
+    z-index: 99999;
+}
+
+.small.progress {
+    font-size: 6px;
+}
+
+.large.progress {
+    font-size: 24px;
+}
+
+.progress:before,
+.progress:after,
+.progress > div:before,
+.progress > div:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2.25em;
+    width: .5em;
+    height: 1.5em;
+    border-radius: .2em;
+    background: #eee;
+    box-shadow: 0 3.5em #eee;
+    -webkit-transform-origin: 50% 2.5em;
+    -moz-transform-origin: 50% 2.5em;
+    transform-origin: 50% 2.5em;
+}
+
+.progress:before {
+    background: #555;
+}
+
+.progress:after {
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    background: #777;
+}
+
+.progress > div:before {
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    background: #999;
+}
+
+.progress > div:after {
+    -webkit-transform: rotate(-135deg);
+    -moz-transform: rotate(-135deg);
+    transform: rotate(-135deg);
+    background: #bbb;
+}
+
+#mainLoader {
+    top: 47%;
+    position: fixed;
+}
+
+@media all and (max-width: 800px){
+    .pageSection .sliderViewport>.slider>li, .portfolioSection .sliderViewport>.slider>li {
+        max-height: 600px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+    .galItem {
+        display: inline-block;
+        float: none;
+    }
+    .portfolioSection p {
+        max-width: 100%;
+    }
+}
+
+/* FXs */
+
+.fadeIn,
+.fastFadeIn,
+.delayedFadeIn {
+    opacity: 0;
+    -webkit-animation: fadeIn ease-in 1;
+    -moz-animation: fadeIn ease-in 1;
+    -o-animation: fadeIn ease-in 1;
+    -ms-animation: fadeIn ease-in 1;
+    animation: fadeIn ease-in 1;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 2s;
+    -moz-animation-duration: 2s;
+    -o-animation-duration: 2s;
+    -ms-animation-duration: 2s;
+    animation-duration: 2s;
+}
+.fastFadeIn, .delayedFadeIn {
+    -webkit-animation-duration: 0.5s;
+    -moz-animation-duration: 0.5s;
+    -o-animation-duration: 0.5s;
+    -ms-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+}
+
+.delayedFadeIn {
+    -webkit-animation-delay: 0.5s;
+    -moz-animation-delay: 0.5s;
+    -o-animation-delay: 0.5s;
+    animation-delay: 0.5s;
+}
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+@-moz-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.fadeOut, .fastFadeOut {
+    opacity: 0;
+    -webkit-animation: fadeOut ease-in 1;
+    -moz-animation: fadeOut ease-in 1;
+    -o-animation: fadeOut ease-in 1;
+    -ms-animation: fadeOut ease-in 1;
+    animation: fadeOut ease-in 1;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 2s;
+    -moz-animation-duration: 2s;
+    -o-animation-duration: 2s;
+    -ms-animation-duration: 2s;
+    animation-duration: 2s;
+}
+
+.fastFadeOut {
+    -webkit-animation-duration: 0.5s;
+    -moz-animation-duration: 0.5s;
+    -o-animation-duration: 0.5s;
+    -ms-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+}
+
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+@-moz-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.ease {
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
 }

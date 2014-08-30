@@ -3,57 +3,32 @@ Dgroupe = root.Dgroupe
 
 # News Views
 
-class Dgroupe.Views.NewsCollection extends Dgroupe.Views.ColectionView
+class Dgroupe.Views.News extends Dgroupe.Views.CollectionView
   tagName: 'ul'
+  className: 'grid'
   id: 'newsFeed'
-  className: 'feed'
-
-  render: ->
-    $parent = $('#newsWrapper')
-    $parent.empty()
-    @$el.empty()
-
-    nodes = []
-
-    console.log @collection.toJSON()
-
-    @collection.each (news)=>
-      newsView = new Dgroupe.Views.News model: news
-      newsView.delegateEvents()
-      nodes.push newsView.render().el
-    @$el.append nodes
-    $parent.append(@el)
-    this
-
-class Dgroupe.Views.News extends Backbone.View
-  tagName: 'li'
-  className: 'entry'
 
   events:
-    'click': 'showFullEntry'
+    'click a': 'showFullEntry'
+
+  initialize:(options)->
+    super
+    if $('#' + @id)[0]?
+      @setElement('#' + @id)
 
   showFullEntry: (e)=>
     e.preventDefault()
     e.stopPropagation()
-    fullNews = new Dgroupe.Views.fullNews model: @model
-    $('#newsWrapper').html(fullNews.render().el)
-
-  template: template('newsEntries')
-
-  render: ->
-    @$el.html @template @model.toJSON()
-    this
+    $targetLink = $(e.currentTarget).attr('href')
+    Backbone.history.navigate($targetLink, yes)
+    null
 
 
-
-class Dgroupe.Views.fullNews extends Backbone.View
-  tagName: 'article'
-  className: 'fullEntry'
-
-  template: template('fullEntry')
+class Dgroupe.Views.NewsEntry extends Backbone.View
+  tagName: 'li'
+  className: 'grid entry'
+  template: template('newsEntryTemplate')
 
   render: ->
-    @$el.html @template @model.toJSON()
-    App.backToListBtn.$el.removeClass('hidden')
-    App.newsNavi.$el.addClass('hidden')
+    @$el.html( @template @model.toJSON() )
     this

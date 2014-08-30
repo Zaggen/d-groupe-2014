@@ -13,21 +13,71 @@
     __extends(navigation, _super);
 
     function navigation() {
+      this.scrollTop = __bind(this.scrollTop, this);
+      this.toggleNavBar = __bind(this.toggleNavBar, this);
       this.markAsSelected = __bind(this.markAsSelected, this);
       this.navigate = __bind(this.navigate, this);
       this.navHandler = __bind(this.navHandler, this);
       return navigation.__super__.constructor.apply(this, arguments);
     }
 
-    navigation.prototype.el = '#NavBar';
-
-    navigation.prototype.initialize = function() {
-      this.$navItems = this.$el.find('a');
-      return this.currentRoute = '';
-    };
+    navigation.prototype.el = '#mainNav';
 
     navigation.prototype.events = {
-      'click a': 'navHandler'
+      'mousedown a:not(.current_page_item)': 'navHandler',
+      'click a': 'preventDefault',
+      'click header, li:not(.mainLvl)': 'toggleNavBar',
+      'click .mainLvl': 'scrollTop'
+    };
+
+    navigation.prototype.initialize = function() {
+      this.$navList = $(this.$el.children('ul'));
+      this.$navItems = this.$navList.children('li');
+      this.$navLinks = this.$navItems.find('a');
+      this.currentRoute = '';
+      this.mobileClosed = true;
+      this.widthToTriggerMobile = 851;
+      this.setResizeHandler();
+      return this.setNavListHeight();
+    };
+
+    navigation.prototype.setResizeHandler = function() {
+      $(window).on('resize', (function(_this) {
+        return function() {
+          return _this.setNavListHeight();
+        };
+      })(this));
+      return this;
+    };
+
+    navigation.prototype.isMobileActive = function() {
+      if (window.innerWidth < this.widthToTriggerMobile) {
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    navigation.prototype.setNavListHeight = function() {
+      var aviableHeight, newHeight;
+      if (this.isMobileActive()) {
+        if (this.listHeight == null) {
+          this.listHeight = $(this.$navItems.get(0)).outerHeight() * this.$navItems.filter(':not(.hideInMobile)').length;
+        }
+        aviableHeight = window.innerHeight;
+        newHeight = aviableHeight > this.listHeight ? this.listHeight : aviableHeight;
+        newHeight = "" + newHeight + "px";
+      } else {
+        newHeight = 'auto';
+        if (!this.mobileClosed) {
+          this.closeMobileMenu();
+        }
+      }
+      return this.$navList.css("height", newHeight);
+    };
+
+    navigation.prototype.preventDefault = function(e) {
+      return e.preventDefault();
     };
 
     navigation.prototype.navHandler = function(e) {
@@ -40,34 +90,23 @@
     };
 
     navigation.prototype.navigate = function(linkTarget, $currentTarget) {
-      var e;
       this.markAsSelected($currentTarget);
-      try {
-        App.navigate(linkTarget, true);
-        return this.currentRoute = linkTarget;
-      } catch (_error) {
-        e = _error;
-        throw new Error('This method needs a router instance defined named "app"');
-      }
+      return Backbone.history.navigate(linkTarget, {
+        trigger: true
+      });
     };
 
     navigation.prototype.markAsSelected = function($el) {
-      var $closestUl, selectedClass;
+      var selectedClass;
       selectedClass = 'current_page_item';
-      $closestUl = $el.closest('ul');
-      if ($closestUl.hasClass('subLvl')) {
-        $closestUl.closest('.mainLvl').addClass(selectedClass);
-      } else {
-        $('.mainLvl').removeClass(selectedClass);
-      }
-      this.$navItems.removeClass(selectedClass);
+      this.$navLinks.removeClass(selectedClass);
       return $el.addClass(selectedClass);
     };
 
     navigation.prototype.findCurrentRoute = function(route) {
       var el, elLink, index, _i, _len, _ref;
       index = 0;
-      _ref = this.$navItems;
+      _ref = this.$navLinks;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         el = _ref[_i];
         elLink = $(el).attr('href');
@@ -77,7 +116,34 @@
           index++;
         }
       }
-      return this.markAsSelected($(this.$navItems[index]));
+      return this.markAsSelected($(this.$navLinks[index]));
+    };
+
+    navigation.prototype.toggleNavBar = function(e) {
+      e.stopPropagation();
+      if (this.isMobileActive()) {
+        if (this.mobileClosed) {
+          return this.openMobileMenu();
+        } else {
+          return this.closeMobileMenu();
+        }
+      }
+    };
+
+    navigation.prototype.openMobileMenu = function() {
+      this.$el.addClass('openMenu');
+      return this.mobileClosed = false;
+    };
+
+    navigation.prototype.closeMobileMenu = function() {
+      this.$el.removeClass('openMenu');
+      return this.mobileClosed = true;
+    };
+
+    navigation.prototype.scrollTop = function() {
+      return this.$navList.stop().animate({
+        scrollTop: this.listHeight
+      }, 800);
     };
 
     return navigation;

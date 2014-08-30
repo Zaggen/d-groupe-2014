@@ -4,7 +4,7 @@
                 href="https://twitter.com/kukaramedellin">@kukaramakara</a></h3>
 
         <h4 class="twitterBlockTitle">Ultimos Twitts</h4><a href="https://twitter.com/kukaramedellin"  data-widget-id="450562932225490944" height="404" data-chrome="noheader" class="twitter-timeline">Tweets by @Sixttina</a>
-        <script>!function (d, s, id) {
+        <!--<script>!function (d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                 if (!d.getElementById(id)) {
                     js = d.createElement(s);
@@ -12,7 +12,7 @@
                     js.src = p + "://platform.twitter.com/widgets.js";
                     fjs.parentNode.insertBefore(js, fjs);
                 }
-            }(document, "script", "twitter-wjs");</script>
+            }(document, "script", "twitter-wjs");</script>-->
         <ul class="socialIcons">
             <li class="ytIcon"><a href="#"></a></li>
             <li class="instaIcon"><a href="#"></a></li>
@@ -27,7 +27,7 @@
         </h3>
 
         <h4 class="twitterBlockTitle">Ultimos Twitts</h4><a href="https://twitter.com/Sixttina" data-widget-id="450559990533599234"  height="395" data-chrome="noheader" class="twitter-timeline">Tweets by @Sixttina</a>
-        <script>!function (d, s, id) {
+        <!--<script>!function (d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                 if (!d.getElementById(id)) {
                     js = d.createElement(s);
@@ -35,7 +35,7 @@
                     js.src = p + "://platform.twitter.com/widgets.js";
                     fjs.parentNode.insertBefore(js, fjs);
                 }
-            }(document, "script", "twitter-wjs");</script>
+            }(document, "script", "twitter-wjs");</script>-->
         <ul class="socialIcons">
             <li class="ytIcon"><a href="#"></a></li>
             <li class="instaIcon"><a href="#"></a></li>
@@ -47,7 +47,7 @@
         </h3>
 
         <h4 class="twitterBlockTitle">Ultimos Twitts</h4><a href="https://twitter.com/DelaireSky" data-widget-id="450564183168262144"  height="395" data-chrome="noheader" class="twitter-timeline">Tweets by @DelaireSky</a>
-        <script>!function (d, s, id) {
+        <!--<script>!function (d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                 if (!d.getElementById(id)) {
                     js = d.createElement(s);
@@ -55,7 +55,7 @@
                     js.src = p + "://platform.twitter.com/widgets.js";
                     fjs.parentNode.insertBefore(js, fjs);
                 }
-            }(document, "script", "twitter-wjs");</script>
+            }(document, "script", "twitter-wjs");</script>-->
         <ul class="socialIcons">
             <li class="ytIcon"><a href="#"></a></li>
             <li class="instaIcon"><a href="#"></a></li>
@@ -67,7 +67,7 @@
                 @lussac</a></h3>
 
         <h4 class="twitterBlockTitle">Ultimos Twitts</h4><a href="https://twitter.com/Lussacpark10"  data-widget-id="450564807695945728" height="395" data-chrome="noheader" class="twitter-timeline">Tweets by @Lussacpark10</a>
-        <script>!function (d, s, id) {
+        <!--<script>!function (d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                 if (!d.getElementById(id)) {
                     js = d.createElement(s);
@@ -75,7 +75,7 @@
                     js.src = p + "://platform.twitter.com/widgets.js";
                     fjs.parentNode.insertBefore(js, fjs);
                 }
-            }(document, "script", "twitter-wjs");</script>
+            }(document, "script", "twitter-wjs");</script>-->
         <ul class="socialIcons">
             <li class="ytIcon"><a href="#"></a></li>
             <li class="instaIcon"><a href="#"></a></li>

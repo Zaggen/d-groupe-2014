@@ -1,39 +1,60 @@
 root = window ? global
 Dgroupe = root.Dgroupe
 
-class Dgroupe.Views.ColectionView extends  Backbone.View
-  initialize: ->
-    @collection.bind('change', @updateView)
-    @fetchCollection(1)
+class Dgroupe.Views.CollectionView extends Backbone.View
+  initialize: (options)->
+    @listenTo(@collection, 'sync', @render)
+    @itemViewClass = options.itemViewClass
+    @hideClass = 'hidden'
 
-  setloadingState: (state)->
-    fadeClass = 'halfFade'
-    if state is 'start'
-      @$el.addClass(fadeClass)
-    else if state is 'end'
-      $('body').css 'cursor','default'
-      @$el.removeClass(fadeClass)
+  renderCollectionNodes: ->
+    nodes = []
+    @collection.each (itemModel)=>
+      itemView = new @itemViewClass( model:itemModel )
+      itemView.delegateEvents()
+      nodes.push itemView.render().el
+    nodes
+
+  hideLoader: ->
+    console.log 'hiding loader'
+    @$progressLoader ?= @$el.find('.progress')
+    console.log @$progressLoader
+    @$progressLoader.addClass(@hideClass)
+
+  showLoader: ->
+    console.log 'showing loader'
+    @$progressLoader ?= @$el.find('.progress')
+    console.log @$progressLoader
+    @$progressLoader.removeClass(@hideClass)
+
+  render: =>
+    if _.isEmpty(@collection.models)
+      console.log 'collection is empty, fetching it now'
+      @collection.fetchPage(1)
     else
-      console.warn state + 'Is not a valid state for seTloadingState'
+      console.log 'collection fetched, now rendering'
+      nodes = @renderCollectionNodes()
+      @$el.html(nodes)
 
-  updateView: =>
-    @render().el
+    @delegateEvents();
+    this
 
-  fetchCollection: (page = 1, fetchCurrent = false)->
-    @setloadingState('start')
+class Dgroupe.Views.CompositeView extends Dgroupe.Views.CollectionView
 
-    if(@page isnt page or fetchCurrent is true)
-      @page = page
-      @collection.fetch
-        data:
-          page: page
-        success: =>
-          @render()
-        error: (collection, response)->
-          console.log 'Error while fetching the collection'
-          console.log response
-        complete: =>
-          @setloadingState('end')
+  initialize: (options)->
+    super
+    @querySelector = options.querySelector ? 'ul'
 
+  render: ->
+    @$el.html @template()
+    if _.isEmpty(@collection.models)
+      console.log 'collection is empty, fetching it now'
+      @collection.fetchPage(1)
     else
-      @setloadingState('end')
+      console.log 'collection fetched, now rendering'
+      collectionView = @$el.find(@querySelector)
+      nodes = @renderCollectionNodes()
+      collectionView.html(nodes)
+
+    @delegateEvents();
+    this

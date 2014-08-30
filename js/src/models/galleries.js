@@ -16,9 +16,18 @@
     }
 
     GalleryImg.prototype.defaults = {
-      title: 'Image',
-      thumbnail: 'src path',
-      fullImg: 'src path'
+      title: 'Gallery Title',
+      galleryItems: [
+        {
+          title: 'Image title',
+          thumbnail: 'src path',
+          fullImg: 'src path'
+        }, {
+          title: 'Image title',
+          thumbnail: 'src path',
+          fullImg: 'src path'
+        }
+      ]
     };
 
     return GalleryImg;
@@ -36,9 +45,21 @@
 
     Gallery.prototype.url = '/json-gallery';
 
+    Gallery.prototype.initialize = function(options) {
+      var _ref;
+      this.url = this.url + ((_ref = options != null ? options.urlQuery : void 0) != null ? _ref : '');
+      return console.log('@url', this.url);
+    };
+
+    Gallery.prototype.parse = function(response, options) {
+      console.log('parsing response', response);
+      this.pageQ = response.pageQ;
+      return response.galleries;
+    };
+
     return Gallery;
 
-  })(Backbone.Collection);
+  })(Dgroupe.Collections.Paginated);
 
 }).call(this);
 

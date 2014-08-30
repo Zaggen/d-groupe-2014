@@ -18,8 +18,9 @@
     News.prototype.defaults = {
       title: 'Lorem',
       date: '2 Abril 2014',
-      content: 'Lorem ipsum dolor',
-      imgSrc: 'imgs/lorem.jpg'
+      excerpt: 'Lorem ipsum...',
+      thumbnail: 'imgs/lorem-small.jpg',
+      permalink: 'permalink'
     };
 
     return News;
@@ -39,7 +40,7 @@
 
     return News;
 
-  })(Backbone.Collection);
+  })(Dgroupe.Collections.Paginated);
 
 }).call(this);
 

@@ -5,12 +5,13 @@ class Dgroupe.Routers.Router extends Backbone.Router
   routes:
     '(/)' : 'home'
     'redes(/)': 'social'
+    'noticia/:entrySlug(/)': 'singleNews'
     'noticias(/)': 'news'
     'contacto(/)': 'contact'
-    'portafolio/on(/:slide)(/)': 'onSection'
-    'portafolio/musical(/:slide)(/)': 'musicSection'
-    'portafolio/corporativo(/:slide)(/)': 'corpSection'
-    'portafolio/eventos(/:slide)(/)': 'eventsSection'
+    'portafolio/canal-on(/:slide)(/)': 'onSection'
+    'portafolio/canal-musical(/:slide)(/)': 'musicSection'
+    'portafolio/canal-corporativo(/:slide)(/)': 'corpSection'
+    'portafolio/canal-eventos(/:slide)(/)': 'eventsSection'
 
   initialize: ->
     console.log 'App Initialize'
@@ -20,7 +21,7 @@ class Dgroupe.Routers.Router extends Backbone.Router
   setAppRoutesOBjs: ->
 
     # Paths to prepend to each of the routes in slideRoutes
-    portflRoot = 'portafolio/'
+    portflRoot = 'portafolio/canal-'
     onPath     = portflRoot + 'on/'
     musicPath  = portflRoot + 'musical/'
     corpPath =   portflRoot + 'corporativo/'
@@ -30,7 +31,7 @@ class Dgroupe.Routers.Router extends Backbone.Router
     @onSlides = ['kukaramakara', 'lussac', 'sixxtina', 'delaire']
     @musicSlides = ['fotos', 'videos', 'djs', 'calendario']
     @corpSlides = ['fotos', 'videos']
-    @eventSlides = ['fotos', 'videos']
+    @eventsSlides = ['fotos', 'videos']
 
     # When a manual slide is made on any of these sliders, an update to the url will be made based on the
     # current index of the slided slider :) and the corresponding index of the @slideRoutes property array.
@@ -38,48 +39,93 @@ class Dgroupe.Routers.Router extends Backbone.Router
       mainSlider : ['', 'redes', 'noticias']
       onSectionSldr: onPath + path for path in @onSlides
       musicSectionSldr : musicPath + path for path in @musicSlides
-      eventSectionSldr: eventPath + path for path in @eventSlides
+      eventsSectionSldr: eventPath + path for path in @eventsSlides
       corpSectionSldr: corpPath + path for path in @corpSlides
 
   setAppInstances: ->
 
-    # Models/Collections Instances
-    @news = new Dgroupe.Models.News
-    @newsCollection = new  Dgroupe.Collections.News
-
     # Views Instances
+
+    #Top Navigation Bar
     @mainNav = new Dgroupe.Views.navigation
 
-    @newsViewCollection = new Dgroupe.Views.NewsCollection(collection: @newsCollection)
-    @newsNavi = new Dgroupe.Views.pagination
-      el: '#newsNavi'
-      collectionView: @newsViewCollection
+    # News
+    @newsCollection = new Dgroupe.Collections.News
+    @newsLayout = new Dgroupe.Views.Layout( el: '#newsWrapper' )
 
-    @backToListBtn = new Dgroupe.Views.ReturnToListBtn
-      listView: @newsViewCollection
-      el: '#backToNewsList'
-      nav: @newsNavi
+    @newsView = new Dgroupe.Views.News
+      itemViewClass: Dgroupe.Views.NewsEntry
+      collection: @newsCollection
 
+    @newsNavi = new Dgroupe.Views.Pagination
+      collection: @newsCollection
+      id: 'newsNavi'
+      url: 'noticias'
+
+    @newsLayout.show([@newsView, @newsNavi])
+
+    # Contact
     @contact = new Dgroupe.Views.contact
 
-    @musicGalNavi = new Dgroupe.Views.pagination
-      el: '#musicGalNavi'
-      collectionView: @newsViewCollection
+    # Loader
+    @mainLoader = new Dgroupe.Views.MainLoader
+
+    # Galleries
+
+    # On Galleries
+    for galleryName in ['kukaramakara', 'lussac', 'sixttina', 'delaire']
+      imgGalleryId = "#{galleryName}Gal"
+      videoGalleryId = "#{galleryName}VideoGal"
+      new Dgroupe.Views.SlimGallery( id: imgGalleryId )
+      new Dgroupe.Views.SlimGallery( id: videoGalleryId, mode: 'iframe' )
+
+
+    galleries = {
+      'music' : 'canal-musical',
+      'corp'  : 'canal-corporativo',
+      'events': 'canal-eventos'
+    }
+
+    gallerieCollections = []
+
+    for own galleryName, wpPostTerm of galleries
+      imgGalleryId = "#{galleryName}Gal"
+      imgGalleryNaviId = "#{imgGalleryId}Navi"
+      videoGalleryId = "#{galleryName}VideoGal"
+
+      gallerieCollections[galleryName] = new Dgroupe.Collections.Gallery( urlQuery: "?from=#{wpPostTerm}")
+
+      console.log 'galleryName', galleryName
+      console.log 'gallerieCollections', gallerieCollections[galleryName]
+      new Dgroupe.Views.Gallery
+        collection: gallerieCollections[galleryName]
+        id: imgGalleryId
+
+      new Dgroupe.Views.Pagination
+        id: imgGalleryNaviId
+        collection: gallerieCollections[galleryName]
+        updateRoutes: no
+
+      new Dgroupe.Views.SlimGallery( id: videoGalleryId, mode: 'iframe' )
+
+    # Lightbox
+
+    lightBox = new Dgroupe.Views.Lightbox
 
     # Event Listeners
 
     $sections = $('body > section:not(#homeSection)')
     $sections.mouseenter (e)=>
       $currentSection = $(e.currentTarget)
-      sectionName = $currentSection.attr('id')
+      sectionName = $currentSection.data('slug')
       path = '/' + if sectionName isnt undefined then sectionName else ''
       @updateRouteNav(path)
 
-    $('#mainSlider .slider').on 'mouseenter', '>li', (e)=>
+    ###$('#mainSlider .slider').on 'mouseenter', '>li', (e)=>
       index = $(e.currentTarget).index()
       path = @slideRoutes.mainSlider[index]
       console.log 'path is ' + path
-      @updateRouteNav(path)
+      @updateRouteNav(path)###
 
     # Event listener for all sliders, when one slides it will
     # trigger a url update using the navigate from backbone
@@ -91,17 +137,9 @@ class Dgroupe.Routers.Router extends Backbone.Router
       null
 
   navigateOnLoad: ->
-
-    # Since we are using wp for this project, any other page than index will redirect to home,
-    # we want to scroll to the desired location after that http redirect. Backbone doesn't
-    # allow to trigger functions associated with a route is the path is the same, so we first
-    # change the route to the home, which is always visible, and then we trigger our navigate
-    linkTarget = window.location.pathname.replace('/' + Dgroupe.helpers.baseFolder, '').replace('/', '')
-    linkTarget = root.removeTrailingSlash(linkTarget)
-    @navigate('/')
-    @navigate(linkTarget, yes)
-    @mainNav.findCurrentRoute(linkTarget)
-
+    route = Backbone.history.fragment
+    @navigate(route, yes)
+    @mainNav.findCurrentRoute(route)
 
   updateRouteNav: (route)->
     @navigate(route, no)
@@ -116,23 +154,25 @@ class Dgroupe.Routers.Router extends Backbone.Router
     if scrollPos is Backbone.history.fragment
       pathFragments = scrollPos.split('/').reverse() # We want to start looping in the array fragments from the end
 
-      for targetId in pathFragments
+      for postRoute in pathFragments
 
-        # We check that the current element of the array (targetId) is neither empty (caused by a trailing slash)
+        # We check that the current element of the array (postRoute) is neither empty (caused by a trailing slash)
         # or the item that we want to skip, when we find it, thats our element id.
-        if(targetId isnt itemToSkip and targetId isnt '')
+        if(postRoute isnt itemToSkip and postRoute isnt '')
           break
 
-      targetEl = $('#' + targetId)
+      postRoute = Backbone.history.fragment
+
+      targetEl = $("[data-slug='#{postRoute}']")
       navBarOffset = 125
 
       try
         scrollPos = targetEl.offset().top - navBarOffset
       catch e
-        if targetId is ''
+        if postRoute is ''
           console.error "targetId can't be empty, verify you are passing the correct arguments and there is no trailing slash in the url"
         else
-          console.error "'##{targetId}' seems like an invalid id or there is no such element in the dom \n #{e.message}"
+          console.error "data-slug:'#{postRoute}' seems like an invalid data attribute or there is no such element in the dom \n #{e.message}"
 
 
     $('html,body').stop().animate({
@@ -162,22 +202,42 @@ class Dgroupe.Routers.Router extends Backbone.Router
     null
 
   home:->
-    @scrollTo(0)
+    @scrollTo(0, null)
     root.sliders.main.slideTo('first')
-    @.mainNav.findCurrentRoute('/')
-    null
+    @mainNav.findCurrentRoute('/')
+    this
 
   social:->
-    @scrollTo(0)
+    @scrollTo(0, null)
     root.sliders.main.slideTo(1)
     @mainNav.findCurrentRoute('/redes')
-    null
+    this
 
   news:->
-    @scrollTo(0)
+    @scrollTo(0, null)
     root.sliders.main.slideTo('last')
     @mainNav.findCurrentRoute('/noticias')
-    null
+    console.log '@newsView', @newsView
+    if @newsView.closed?
+      @newsView = new Dgroupe.Views.News
+        itemViewClass: Dgroupe.Views.NewsEntry
+        collection: @newsCollection
+      @newsLayout.show([@newsView, @newsNavi])
+
+    this
+
+  singleNews: (permalink)->
+    @scrollTo(0, null)
+
+    root.sliders.main
+    .config('emmitEvents', no)
+    .slideTo('last')
+    .config('emmitEvents', yes)
+
+    singleEntry = new Dgroupe.Views.SingleEntry( model: new Dgroupe.Models.SingleEntry )
+    @newsLayout.show([singleEntry])
+
+    this
 
   onSection: (slide)->
     @navigateSection(slide, 'on')
@@ -189,32 +249,33 @@ class Dgroupe.Routers.Router extends Backbone.Router
     @navigateSection(slide, 'corp')
 
   eventsSection: (slide)->
-    @navigateSection(slide, 'event')
+    @navigateSection(slide, 'events')
 
   contact:->
-    @scrollTo(Backbone.history.fragment)
-    null
-
+    @scrollTo(Backbone.history.fragment, null)
+    this
 
 
 $ =>
 
-  root.App = new Dgroupe.Routers.Router();
+  root.app = new Dgroupe.Routers.Router()
+
 
   Backbone.history.start
     pushState: true
     root: Dgroupe.helpers.baseFolder
 
+
 $(window).load ->
 
   #Once the page is loaded with a route diferent than home, slide/scroll to the corresponding section
-  App.navigateOnLoad()
+  root.app.navigateOnLoad()
 
 # Refactor
 $('a.route, .portfolioBtn').click (e)->
   e.preventDefault()
   linkTarget = $(this).attr('href')
-  App.navigate(linkTarget, true)
+  Backbone.history.navigate(linkTarget, true)
 
 # Fb Window behavior - Please refactor into Backbone views
 
@@ -226,7 +287,7 @@ $('.fbIcon').click (e)->
   if hiddenEl?
     hiddenEl.removeClass('hidden')
 
-$('.closeBtn').click ->
+###$('.closeBtn').click ->
   parent = $(this).closest('.socialBlock')
   $(parent).find('.fbBlock').addClass('hidden')
 
@@ -245,4 +306,4 @@ $('a.ytGal').has('img').colorbox
   maxHeight: '90%'
   iframe: yes
   innerWidth:540
-  innerHeight:346
+  innerHeight:346###

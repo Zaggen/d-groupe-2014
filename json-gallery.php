@@ -4,13 +4,18 @@
  */
 
 $page = (isset($page)) ? $page : $_REQUEST['page'];
+$postSlug = $_REQUEST['from'] ?: '';
 
 header('content-type: application/json; charset=ISO-8859-1');
 
-$galleries = getGalleries('musical', 2, $page, true);
+$galConf = array(
+    'from' => $postSlug,
+    'imgPerPage' => 18,
+    'page' => 1,
+    'getPageQ' => true
+);
 
-echo '<pre>';
-print_r($galleries);
-echo '</pre>';
+$galleryPage = getGalleryPage($galConf);
 
-//echo json_encode($galleries);
+
+echo json_encode($galleryPage);

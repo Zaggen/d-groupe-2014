@@ -9,73 +9,104 @@
 
   Dgroupe = root.Dgroupe;
 
-  Dgroupe.Views.ColectionView = (function(_super) {
-    __extends(ColectionView, _super);
+  Dgroupe.Views.CollectionView = (function(_super) {
+    __extends(CollectionView, _super);
 
-    function ColectionView() {
-      this.updateView = __bind(this.updateView, this);
-      return ColectionView.__super__.constructor.apply(this, arguments);
+    function CollectionView() {
+      this.render = __bind(this.render, this);
+      return CollectionView.__super__.constructor.apply(this, arguments);
     }
 
-    ColectionView.prototype.initialize = function() {
-      this.collection.bind('change', this.updateView);
-      return this.fetchCollection(1);
+    CollectionView.prototype.initialize = function(options) {
+      this.listenTo(this.collection, 'sync', this.render);
+      this.itemViewClass = options.itemViewClass;
+      return this.hideClass = 'hidden';
     };
 
-    ColectionView.prototype.setloadingState = function(state) {
-      var fadeClass;
-      fadeClass = 'halfFade';
-      if (state === 'start') {
-        return this.$el.addClass(fadeClass);
-      } else if (state === 'end') {
-        $('body').css('cursor', 'default');
-        return this.$el.removeClass(fadeClass);
+    CollectionView.prototype.renderCollectionNodes = function() {
+      var nodes;
+      nodes = [];
+      this.collection.each((function(_this) {
+        return function(itemModel) {
+          var itemView;
+          itemView = new _this.itemViewClass({
+            model: itemModel
+          });
+          itemView.delegateEvents();
+          return nodes.push(itemView.render().el);
+        };
+      })(this));
+      return nodes;
+    };
+
+    CollectionView.prototype.hideLoader = function() {
+      console.log('hiding loader');
+      if (this.$progressLoader == null) {
+        this.$progressLoader = this.$el.find('.progress');
+      }
+      console.log(this.$progressLoader);
+      return this.$progressLoader.addClass(this.hideClass);
+    };
+
+    CollectionView.prototype.showLoader = function() {
+      console.log('showing loader');
+      if (this.$progressLoader == null) {
+        this.$progressLoader = this.$el.find('.progress');
+      }
+      console.log(this.$progressLoader);
+      return this.$progressLoader.removeClass(this.hideClass);
+    };
+
+    CollectionView.prototype.render = function() {
+      var nodes;
+      if (_.isEmpty(this.collection.models)) {
+        console.log('collection is empty, fetching it now');
+        this.collection.fetchPage(1);
       } else {
-        return console.warn(state + 'Is not a valid state for seTloadingState');
+        console.log('collection fetched, now rendering');
+        nodes = this.renderCollectionNodes();
+        this.$el.html(nodes);
       }
+      this.delegateEvents();
+      return this;
     };
 
-    ColectionView.prototype.updateView = function() {
-      return this.render().el;
-    };
-
-    ColectionView.prototype.fetchCollection = function(page, fetchCurrent) {
-      if (page == null) {
-        page = 1;
-      }
-      if (fetchCurrent == null) {
-        fetchCurrent = false;
-      }
-      this.setloadingState('start');
-      if (this.page !== page || fetchCurrent === true) {
-        this.page = page;
-        return this.collection.fetch({
-          data: {
-            page: page
-          },
-          success: (function(_this) {
-            return function() {
-              return _this.render();
-            };
-          })(this),
-          error: function(collection, response) {
-            console.log('Error while fetching the collection');
-            return console.log(response);
-          },
-          complete: (function(_this) {
-            return function() {
-              return _this.setloadingState('end');
-            };
-          })(this)
-        });
-      } else {
-        return this.setloadingState('end');
-      }
-    };
-
-    return ColectionView;
+    return CollectionView;
 
   })(Backbone.View);
+
+  Dgroupe.Views.CompositeView = (function(_super) {
+    __extends(CompositeView, _super);
+
+    function CompositeView() {
+      return CompositeView.__super__.constructor.apply(this, arguments);
+    }
+
+    CompositeView.prototype.initialize = function(options) {
+      var _ref;
+      CompositeView.__super__.initialize.apply(this, arguments);
+      return this.querySelector = (_ref = options.querySelector) != null ? _ref : 'ul';
+    };
+
+    CompositeView.prototype.render = function() {
+      var collectionView, nodes;
+      this.$el.html(this.template());
+      if (_.isEmpty(this.collection.models)) {
+        console.log('collection is empty, fetching it now');
+        this.collection.fetchPage(1);
+      } else {
+        console.log('collection fetched, now rendering');
+        collectionView = this.$el.find(this.querySelector);
+        nodes = this.renderCollectionNodes();
+        collectionView.html(nodes);
+      }
+      this.delegateEvents();
+      return this;
+    };
+
+    return CompositeView;
+
+  })(Dgroupe.Views.CollectionView);
 
 }).call(this);
 

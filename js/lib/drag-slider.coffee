@@ -1,25 +1,27 @@
 root = window ? global # no need for node.js global in a slider but w/e
 root.sliders = {}
 $ = root.jQuery
+DEBUG = false
 
 class Slider
   constructor:(@sliderId, config = {})->
     $ = window.jQuery
 
     @settings =
-      viewportMaxWidth:  config.viewportMaxWidth ? 1000
-      viewportMaxHeight: config.viewportMaxHeight ? 500
-      slideShow:         config.slideShow ? yes
-      stopOnHover:       config.stopOnHover ? yes
-      cycle:             config.cycle ? yes
-      navigator:         config.navigator ? no
-      navigatorEvents:   config.navigatorEvents ? no
-      autoHideBtns:      config.autoHideBtns ? yes # Not implemented yet
-      duration:          config.duration ? 1000 # Deprecated, using css transitions now
-      emmitEvents:       config.emmitEvents ? no
-      draggable:         config.draggable ? yes
-      timingClass:       config.timingClass ? 'trans_point8Sec' # Must be created in the css
-      preventLinksOnDrag:config.allowLinks ? yes
+      #viewportMaxWidth:  config.viewportMaxWidth ? 1000
+      #viewportMaxHeight: config.viewportMaxHeight ? 500
+      #slideShow:         config.slideShow ? yes # Not implemented yet
+      #stopOnHover:       config.stopOnHover ? yes # Not implemented yet
+      cycle:              config.cycle ? yes # Not implemented yet
+      navigator:          config.navigator ? yes
+      navigatorEvents:    config.navigatorEvents ? no
+      #autoHideBtns:      config.autoHideBtns ? yes # Not implemented yet
+      duration:           config.duration ? 1 # In seconds
+      emmitEvents:        config.emmitEvents ? no
+      draggable:          config.draggable ? yes
+      centerImages:       config.centerImages ? yes
+      navigatorInParent:  config.navigatorInParent ? no
+      preventLinksOnDrag: config.allowLinks ? no
 
     #jQuery Objects
     @$sliderViewport   = $('#' + sliderId)
@@ -28,30 +30,52 @@ class Slider
     @$sliderPrevBtn    = $ @$sliderViewport.children('.prevBtn')
     @$sliderNextBtn    = $ @$sliderViewport.children('.nextBtn')
 
+    @startSlider()
+
+  config: (property, value)->
+    @settings[property] = value
+    this
+
+  startSlider: ->
+    @setSlider()
+
+    if @elementsQ > 1
+      @setListeners()
+    else
+      @disableBtns()
+
+  setSlider: ->
+    @viewPortWidth = @$sliderViewport.width()
+    @elementsQ = @$sliderItems.length
+    @sliderWidth = @elementsQ * 100
+    @percentageStep = sliderItemWidth = 100 / @elementsQ
+    @rightLimit = (@viewPortWidth * @elementsQ) - @viewPortWidth #
+    @$sliderItems.css 'width', "#{sliderItemWidth}%"
+
+    @$slider.css
+      'width': "#{@sliderWidth}%"
+      'transition-duration': "#{@settings.duration}s"
+
     # In order to prevent any other link event handler to activate first we find the childrens and use those to
     # stop and Immediate Propagation of the event
     if @settings.preventLinksOnDrag
-      @$sliderLinks = @$sliderItems.children().children()
+      @$sliderLinks ?= @$sliderItems.children().children()
 
-    if config.navigatorInParent?
-      @$sliderNavBtns    = $ @$sliderViewport.parent().find('.navigator a')
+    if @settings.navigatorInParent
+      @$sliderNavBtns  ?= $ @$sliderViewport.parent().find('.navigator a')
     else
-      @$sliderNavBtns    = $ @$sliderViewport.children('.navigator').children()
+      @$sliderNavBtns  ?= $ @$sliderViewport.children('.navigator').children()
 
+    #if not @$sliderNavBtns? then @addNavigator()
 
     #Slider sizing variables and settings
-    @setSlider()
-
-    @$slider.addClass(@settings.timingClass) # Needed when the slide is not activated by click events
-
-
     @index = 0
     @slideToPos = 0
     @draggedEl = null
     @hasLimitClass = false
+    this
 
-    ## Listeners
-
+  setListeners: ->
     @$sliderPrevBtn.click (e)=>
       e.stopPropagation()
       @slideTo('prev')
@@ -62,17 +86,40 @@ class Slider
 
     # Navigator Bullets
 
+    ###
+    Disabled for dgroupe, was causing a bug, so this a dirt hack, later should be refactored.
     @$sliderNavBtns.mousedown (e)=>
       e.stopPropagation()
       index = $(e.currentTarget).index()
-      #@slideTo(index)
+      @slideTo(index)
+    ###
 
-    ## Drag
+    # Drag
     if @settings.draggable
-      @$sliderViewport.mousedown (e)=>
+      @$sliderViewport.on 'click a', (e)=>
+        e.preventDefault()
+        e.stopPropagation()
+
+      @$sliderViewport.find('a').on 'mousedown', (e)=>
+        console.log('currentTarget', e.currentTarget)
+        @linkTarget = $(e.currentTarget).attr('href')
+        if @settings.preventLinksOnDrag
+          Backbone.history.navigate(@linkTarget, true)
+          @linkTarget = null
+
+      @$sliderViewport.on 'mousedown :not(.prevBtn)', (e)=>
+        console.log 'mousedown'
         e.stopPropagation()
         e.preventDefault()
-        @dragStart(e)
+        @draggedEl = e.currentTarget
+        @dragStart(e.pageX)
+        null
+
+      @$sliderViewport.on 'touchstart', (e)=>
+        e = e.originalEvent
+        x = e.touches[0].pageX
+        @draggedEl = e.currentTarget
+        @dragStart(x, 'touchmove')
         null
 
       # Removes mousemove ev when the mouse is up anywhere in
@@ -80,101 +127,86 @@ class Slider
       # if @dragStartX means the current object called by the handler
       # did not started the mousedown event so we skip it
 
-      $(document).mouseup (e)=>
+      $(document).on 'mouseup',(e)=>
         e.stopPropagation()
         e.preventDefault()
-        @dragEnd(e)
+        @dragEnd(e.pageX)
+
+      @$sliderViewport.on 'touchend',(e)=>
+        #not working
+        console.log 'e.originalEvent', e.originalEvent
+        x = e.originalEvent.touches[0].pageX
+        @dragEnd(x)
 
     $( window ).resize =>
-      @setSlider()
+      setTimeout =>
+        @setSlider()
+      , 1
 
-      ###
-      if @settings.preventLinksOnDrag
+  this
 
-        Not Working :S
-        @$sliderLinks.click (e)=>
-          e.stopImmediatePropagation()
-          e.preventDefault()
-          if @draggedEl
-            alert 'yep it was dragged'
-            @draggedEl = null
-            console.log '@draggedEl is ' + @draggedEl
-          else
-            alert 'nopes'
-      ###
+  disableBtns: ->
+    @$sliderPrevBtn.css('opacity', 0.2)
+    @$sliderNextBtn.css('opacity', 0.2)
+    this
 
-
+  dragStart: (startX, inputEvent = 'mousemove')->
+    $el = $ @draggedEl
+    @dragStartX = startX
+    slideToPos = @$slider.position().left
+    dragPos = (slideToPos / @viewPortWidth) * 100
 
 
-  setSlider: ->
-    @viewPortWidth = @$sliderViewport.width()
-    @elementsQ = @$sliderItems.length
-    @sliderWidth = @elementsQ * 100
-    sliderItemWidth = 100 / @elementsQ
-    @rightLimit = (@viewPortWidth * @elementsQ) - @viewPortWidth #
-    @$slider.css 'width', "#{@sliderWidth}%"
-    @$sliderItems.css 'width', "#{sliderItemWidth}%"
+    @$slider.css
+      'transition-duration': '0s' # We are doing direct manipulation, no need for transitions here
 
-  dragStart: (e)->
-    $el = $ e.currentTarget
-    @dragStartX = e.pageX
-    startX = e.pageX
-    @draggedEl = e.currentTarget
-    @slideToPos = @$slider.position().left
-    #unless @slideToPos is 0
-     # console.log "slideToPos:#{@slideToPos}"
-  #  @$slider.stop()
+    $el.on inputEvent, (ev)=>
+      ev = ev.originalEvent
+      x = if inputEvent is 'mousemove' then ev.pageX else ev.touches[0].pageX
+      @dragg(startX, x, slideToPos)
 
-    @$slider.removeClass(@settings.timingClass) # We are doin direct manipulation, no need for transitions here
 
-    $el.on 'mousemove', (ev)=>
+  dragg: (startX, currentX, slideToPos) =>
+    offsetX = startX - currentX # Difference between the new mouse x pos and the previus one
+    slideToPos -= offsetX
 
-      offsetX = startX - ev.pageX # Difference between the new mouse x pos and the previus one
+    # Refactor below asap
 
-      startX = ev.pageX
+    if slideToPos >= 0
+      slideToPos = 0
+      @isOutBounds = yes
+      @dragStartX = currentX
 
-      @slideToPos -= offsetX
+      unless @hasLimitClass
+        @$sliderViewport.addClass('onLeftLimit')
+        @hasLimitClass = yes
 
-      # Refactor below asap
+    else if slideToPos <= -@rightLimit
+      slideToPos = -@rightLimit
+      @isOutBounds = yes
+      @dragStartX = currentX
 
-      if @slideToPos >= 0
-        @slideToPos = 0
-        @isOutBounds = yes
-        @dragStartX = startX
-        unless @hasLimitClass
-         @$sliderViewport.addClass('onLeftLimit')
-         @hasLimitClass = yes
+      unless @hasLimitClass
+        @$sliderViewport.addClass('onRightLimit')
+        @hasLimitClass = yes
 
-      else if @slideToPos <= -@rightLimit
-        @slideToPos = -@rightLimit
-        @isOutBounds = yes
-        @dragStartX = startX
-        unless @hasLimitClass
-          @$sliderViewport.addClass('onRightLimit')
-          @hasLimitClass = yes
+    dragPos = (slideToPos / @viewPortWidth) * 100
+    dragPos = dragPos * (@percentageStep / 100)
 
-      dragPos = (@slideToPos / @viewPortWidth) * 100
+    @$slider.css('transform', "translate3d(#{dragPos}%, 0, 0)")
+    @isOutBounds = no
 
-      #@$slider.css('left', @slideToPos + 'px') Deprecated px drag
-      @$slider.css('left', dragPos + '%')
-      @isOutBounds = no
-      ###
-      We should use a better way to move the elements around, using forced gpu calcs
-      @$slider.css({
-        '-webkit-transform': "translate3d(#{@slideToPos}%, 0px, 0px) perspective(2000px)"
-      })
-      ###
-      null
+    null
 
-  dragEnd: (e)->
+  dragEnd: (currentX)->
     if @draggedEl or @clicked #not working, always null :S
       console.log 'drag end event fired for ' + @sliderId
       console.log @draggedEl
       if @hasLimitClass
-         @$sliderViewport.removeClass('onLeftLimit onRightLimit')
-         @hasLimitClass = no
+        @$sliderViewport.removeClass('onLeftLimit onRightLimit')
+        @hasLimitClass = no
 
-      offsetX = @dragStartX - e.pageX
+      offsetX = @dragStartX - currentX
       offsetPercentage = Math.abs (offsetX / @viewPortWidth)
       minToAction = 0.1 # The user must have dragged the slider at least 10% to move it
       if offsetPercentage < minToAction then offsetPercentage = 0
@@ -194,6 +226,10 @@ class Slider
         ## Didn't move, or at least not much
         console.log "Didn't move, or at least not much"
         tempIndex = @index
+        if @linkTarget?
+          console.log 'Navigating to the previously clicked link', @linkTarget
+          Backbone.history.navigate(@linkTarget, true)
+          @linkTarget = null
 
       console.log "tempIndex:" + tempIndex
       @slideTo(tempIndex)
@@ -219,13 +255,13 @@ class Slider
     console.log 'slideTo Called with argument:' + command
     switch command
       when 'next'
-          @index++
+        @index++
       when 'prev'
-          @index--
+        @index--
       when 'first'
-          @index = 0
+        @index = 0
       when 'last'
-          @index = @elementsQ - 1
+        @index = @elementsQ - 1
       else
         if isFinite(command)
           @index = command
@@ -250,61 +286,46 @@ class Slider
         return false
 
     console.log 'index:' + @index
-    @slideToPos = -1 * (@index * 100)
+    slideToPos = -1 * (@index * @percentageStep)
     if(@settings.navigator)
-      console.log @$sliderNavBtns.get(0)
       @$sliderNavBtns.removeClass 'selected'
       $(@$sliderNavBtns[@index]).addClass 'selected'
 
-    #@$slider.stop().animate({'left': @slideToPos + '%'}, @settings.duration)
-    @$slider.addClass(@settings.timingClass)
-    @$slider.css('left', @slideToPos + '%')
+    @$slider.css
+      'transform': "translate3d(#{slideToPos}%, 0, 0)"
+      'transition-duration': "#{@settings.duration}s"
+
     if(@settings.emmitEvents)
       $.event.trigger('onSlide', [@index, @sliderId]);
 
+    this
 
-    ###
-    @$slider.stop().css({
-      '-webkit-transform': "translate3d(#{@slideToPos}%, 0px, 0px) perspective(2000px)"
-    })
-    ###
 
 $ ->
   # Home Slider -> Contains the frame sliders
-  sliders.main = new Slider 'mainSlider',
+  window.sliders.main = new Slider 'mainSlider',
     autoHideBtns: yes
-    emmitEvents: yes
+    emmitEvents: on
   # Home Frames Sliders
-  sliders.canalOn = new Slider 'frameMusicSldr', {}
-  sliders.canalMusical = new Slider 'frameOnSldr', {}
-  sliders.canalCorp = new Slider 'frameCorpSldr', {}
-  sliders.eventos = new Slider 'frameEventsSldr', {}
-  # Sections Sliders
-  sliders.onSection = new Slider 'onSectionSldr' ,
-    emmitEvents: yes
-    navigator: yes
-    navigatorInParent: yes
-    navigatorEvents: no
+  for frameName in ['frameMusicSldr', 'frameOnSldr', 'frameCorpSldr', 'frameEventsSldr']
+    new Slider frameName, {}
 
-  sliders.musicSection = new Slider 'musicSectionSldr' ,
-      emmitEvents: yes
+  # Sections Sliders
+  for sectionName in ['on', 'music', 'events', 'corp']
+    sectionName += 'Section'
+    sliderName = "#{sectionName}Sldr"
+    window.sliders[sectionName] = new Slider sliderName ,
+      emmitEvents: on
       navigator: yes
       navigatorInParent: yes
       navigatorEvents: no
 
-
-  sliders.eventSection = new Slider 'eventSectionSldr' ,
-    emmitEvents: yes
-    navigator: yes
-    navigatorInParent: yes
-    navigatorEvents: no
-
-
-  sliders.corpSection = new Slider 'corpSectionSldr' ,
-    emmitEvents: yes
-    navigator: yes
-    navigatorInParent: yes
-    navigatorEvents: no
+  for djHouse in ['kukaramakara', 'lussac', 'sixttina', 'delaire', 'lussac']
+    sliderId = "#{djHouse}DjSlider"
+    new Slider sliderId,
+      emmitEvents: off
+      autoHideBtns: yes
+      draggable: no
 
   $('.socialBlock').click (e)->
     e.stopPropagation()

@@ -7,11 +7,12 @@ class Dgroupe.Models.News extends Backbone.Model
   defaults:
     title: 'Lorem'
     date: '2 Abril 2014'
-    content: 'Lorem ipsum dolor'
-    imgSrc: 'imgs/lorem.jpg'
+    excerpt: 'Lorem ipsum...'
+    thumbnail: 'imgs/lorem-small.jpg'
+    permalink: 'permalink'
 
 #Collections
 
-class Dgroupe.Collections.News extends Backbone.Collection
+class Dgroupe.Collections.News extends Dgroupe.Collections.Paginated
   model: Dgroupe.Models.News
   url: '/news-feed'

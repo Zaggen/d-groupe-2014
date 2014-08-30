@@ -6,6 +6,29 @@
  * Time: 8:10 PM
  */
 
+function getIdFromSlug($pageslug) {
+    $page = get_page_by_path($pageslug);
+    if ($page) {
+        return $page->ID;
+    } else {
+        return null;
+    }
+}
+
+function isAjaxRequest(){
+    if(strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+        return true;
+    else
+        return false;
+}
+
+#Echoes a json object with json headers
+function jsonResponse($jsonArray){
+    header('Content-type: application/json');
+    $jsonResponse = json_encode($jsonArray);
+    echo $jsonResponse;
+}
+
 if (function_exists('add_theme_support')) {
     add_theme_support('post-thumbnails');
 }
@@ -80,7 +103,7 @@ function splitGalFromContent() {
     );
 }
 
-function createGalleryObj($galleryIdS, $title = '') {
+function createGalleryObj($galleryIdS, $title = '', $thumbnailSize = 'galleryThumb') {
 
     if (is_array($galleryIdS)) {
         if(count($galleryIdS) > 0){
@@ -89,9 +112,10 @@ function createGalleryObj($galleryIdS, $title = '') {
             return null;
         }
     }elseif(is_string($galleryIdS)){
-        if($galleryIdS == ''){
+        if($galleryIdS !== ''){
             $idsArr = explode(',', $galleryIdS);
         }else{
+            trigger_error('createGalleryObj argument string is empty, use a comma separated ids or an array', E_USER_ERROR);
             return null;
         }
     }elseif($galleryIdS === null){
@@ -109,9 +133,9 @@ function createGalleryObj($galleryIdS, $title = '') {
 
 
     foreach ($idsArr as $id) {
-        $galleryObj[] = array(
+        $galleryObj['galleryItems'][] = array(
             'title' => get_the_title($id),
-            'thumbnail' => array_shift(wp_get_attachment_image_src($id, 'galleryThumb')),
+            'thumbnail' => array_shift(wp_get_attachment_image_src($id, $thumbnailSize)),
             'fullImg' => array_shift(wp_get_attachment_image_src($id, 'large'))
         );
     }
@@ -133,7 +157,7 @@ function getGalleryThumbsArr($galleryIdString, $thumbSize = 'small') {
     return $galleryArr;
 }
 
-function placeVideoGal($terms) {
+function placeVideoGal($terms, $containerId = '') {
     $query = array(
         'post_type' => 'video',
         'tax_query' => array(
@@ -155,83 +179,166 @@ function placeVideoGal($terms) {
         endif;
     endwhile;
     if (!empty($videoGallery)) {
-        echo '<div class="grid_12">';
+        echo "<div class='grid_12' id='{$containerId}'>";
         placeTemplate('video-gallery-template', $videoGallery,
             array('colsQ' => 6));
         echo '</div>';
     }
 }
 
-function placePicGal($galleryArr, $naviId) {
-
-    if(isset($galleryArr['pageQ'])){
-        $naviPagesQ = array_pop($galleryArr);
+function placePicGal($galleryPage, $galId = '', $class = 'gal') {
+    if(empty($galleryPage)){
+        return false;
     }
 
-    foreach($galleryArr as $gallery){
-        placeTemplate('gallery-template', $gallery, array('colsQ' => 6, 'class' => 'musicGal'));
-    }
-
-    if(isset($naviPagesQ)){
-        echo "<ul id='{$naviId}' class='pageNavi' data-page-quantity='{$naviPagesQ}'></ul>";
-    }
-
+    placeTemplate('gallery-template', $galleryPage['galleries'], null);
+    return true;
 }
 
+
 /**
- * @param string $postType Custom post type (or default) where to find the galleries entries
- * @param integer $imgPerPage The maximum number of images per page
- * @param integer $page The page that you want to retrieve based on the $imgPerPage
- * @param boolean $getPageQ Determines if the number of pages for the whole set of galleries is returned (Loops till last item)
- * @return array
+ * @param array $conf
+ * @return array Associative array containing all the galleries images inside the conf criteria (page and postPerPage)
  * */
-function getGalleries($postType = 'post', $imgPerPage = 0, $page = 1, $getPageQ = false) {
+function getGalleryPage($conf = array('postType' => 'post')) {
+
+    $postType = $conf['postType'] ?: 'gallery';
+    $termSlug = $conf['from'];
+    $imgPerPage = $conf['imgPerPage'] ?: 10;
+    $page = $conf['page'] ?: 1;
+    $getPageQ = $conf['getPageQ'] ?: false;
+    $thumbSize = $conf['thumbSize'] ?: null;
+
+    $galleryPage = array();
     $galleries = array();
-    $startRange = $page * $imgPerPage - $imgPerPage;
-    $endRange = $startRange + $imgPerPage;
-    $rangeLength = $imgPerPage;
+
+    # Item Quantity needed to fill a whole page
+    $dueItems =  $imgPerPage;
+
+    # Used to ignore galleries outside of our lookup page range
+    $rangeToIgnore = ($page  * $imgPerPage) - $imgPerPage; # The range is between 0 and this number
     $totalImgQ = 0;
+
+    # Used to skip the gallery adding process just to get the $totalImgQ
     $skip = false;
 
-    query_posts(array('post_type' => $postType));
-    while (have_posts()):
-        if (have_posts()): the_post();
+    $query = new WP_Query( array(
+            'post_type' => $postType,
+            'tax_query' => array(
+                array(
+                    'taxonomy' => 'category',
+                    'field' => 'slug',
+                    'terms' => $termSlug)
+            )
+        )
+    );
+    while ( $query->have_posts() ) :
+        if (have_posts()): $query->the_post();
 
             $galTitle = get_the_title();
             $data = splitGalFromContent();
             $galIds = explode(',', $data['galleryIds']);
-
             $galImgQ = count($galIds);
+
+            $temp = $rangeToIgnore - $totalImgQ; # We might use it as our $startIndex value
+            $temp = ($temp < 0) ? 0 : $temp;
             $totalImgQ += $galImgQ;
 
-            if(!$skip){
 
-                if($startRange < $galImgQ){
-                    $galIds = array_splice($galIds, $startRange, $rangeLength);
-                    $galleries[] = createGalleryObj($galIds, $galTitle);
-                    if($endRange > $galImgQ){
-                        $endRange -= $galImgQ;
-                        $startRange = 0;
-                        $rangeLength = $endRange;
-                    }else{
-                        if($getPageQ){
-                            $skip = true;
-                        }else{
-                            break;
-                        }
-                    }
+            # Once we get our images object, and the getPageQ option is
+            # true, we need to keep looping just to find out how many
+            # images are there in total, but we don't want to add those
+            # to our array, so we just skip them
+            if(!$skip):
+
+                # We ignore the images in any gallery when the image count is
+                # inside the ignore range (0-$rangeToIgnore), since it depends of the current page
+                # being displayed, e.g: on page 1 it starts at 0, at page 2
+                # with the default img per page we start at 10, so the first admitted
+                # gallery should come after the the $totalImgQ gets as high as 11
+
+                if($totalImgQ > $rangeToIgnore){
+                    $startIndex = $temp;
+                    $itemsToTake = ( $galImgQ > $dueItems ) ? $dueItems : $galImgQ;
+                    $galIds = array_splice($galIds, $startIndex, $itemsToTake);
+                    $galleries[] = createGalleryObj($galIds, $galTitle, $thumbSize);
+                    $dueItems = $dueItems - $galImgQ;
                 }
 
-            }
+                # When no more items are needed to fill our page, we either break out of the loop or
+                # keep adding the gallery Quantity of each entry but skipping them and use the total
+                # to get our number of pages(A few lines below).
+                if($dueItems <= 0){
+                    if($getPageQ){
+                        $skip = true;
+                    }else{
+                        break;
+                    }
+                }
+            endif;
 
         endif;
     endwhile;
 
     if($getPageQ){
-        $galleries['pageQ'] = ceil($totalImgQ / $imgPerPage);
+        $galleryPage['pageQ'] = ceil($totalImgQ / $imgPerPage);
     }
 
-    return $galleries;
+    $galleryPage['galleries'] = $galleries;
+
+    return $galleryPage;
+}
+
+function getArrayFromIds($ids){
+    if(is_string($ids)){
+
+        if($ids == ''){
+            return array();
+        }
+
+        $ids = explode(',',$ids);
+
+    }elseif(is_array($ids)){
+
+        return $ids;
+    }
+
+    return $ids;
+
+}
+
+function getGalPageFromIds($conf = array()) {
+
+    $galIds = getArrayFromIds($conf['galIds']);
+    $imgPerPage = $conf['imgPerPage'] ?: 10;
+    $page = $conf['page'] ?: 1;
+    $getPageQ = $conf['getPageQ'] ?: false;
+    $galTitle = $conf['galTitle'] ?: null;
+
+    $galleryPage = array();
+    $startRange = ($page * $imgPerPage) - $imgPerPage;
+    $totalImgQ = count($galIds);
+    $galleries = array();
+
+    if($startRange < $totalImgQ){
+        $galIds = array_splice($galIds, $startRange, $imgPerPage);
+        $galleries[0] = createGalleryObj($galIds, $galTitle);
+
+    }
+
+    if($getPageQ){
+        $galleryPage['pageQ'] = ceil($totalImgQ / $imgPerPage);
+    }
+
+    $galleryPage['galleries'] = $galleries;
+
+    return $galleryPage;
+}
+
+function getGalleryItems($galConf){
+    $galleryPage = getGalleryPage($galConf);
+    $galleries = array_shift($galleryPage['galleries']);
+    return $galleries['galleryItems'];
 }
 
 function galFrameSliderItems($config) {
@@ -264,52 +371,55 @@ function galFrameSliderItems($config) {
 # Disabling jquery load from WP
 if (!is_admin()) {
     wp_deregister_script('jquery');
+    wp_deregister_script('underscore');
 }
 
 // Limpia los imputs de los formularios enviados.
 
-function sanitize($imput,$mode="txt")  {
-    $imput = trim($imput);
-    $imput = strip_tags($imput);
+function sanitize($input, $mode = 'txt')  {
+    $input = trim($input);
+    $input = strip_tags($input);
     switch ($mode)	  {
-        case "varchar":
-            $healthy = preg_replace('/[^a-z A-Z-_]/', '', $imput);
+        case 'varchar':
+            $healthy = preg_replace('/[^a-z A-Z-_]/', '', $input);
             return $healthy;
-
-        case "alpha":
-            $healthy = preg_replace('/[^a-z A-Z]/', '', $imput);
-            return $healthy;
-
             break;
 
-        case "alnum":
-            $healthy = preg_replace('/[^0-9 a-zA-Z]/', '', $imput);
+        case 'alpha':
+            $healthy = preg_replace('/[^a-z A-Z]/', '', $input);
             return $healthy;
-
             break;
 
-        case "num":
-            $healthy = preg_replace('/[^0-9]/', '', $imput);
+        case 'alnum':
+            $healthy = preg_replace('/[^0-9 a-zA-Z]/', '', $input);
             return $healthy;
-
             break;
 
-        case "email":
-            $healthy = trim(preg_replace('/[^0-9a-zA-Z_@.]/', '', $imput)," ");
+        case 'num':
+            $healthy = preg_replace('/[^0-9]/', '', $input);
             return $healthy;
-
             break;
 
-        case "txt":
-            $healthy = preg_replace('/[^a-z A-Z0-9@\'\"\.\,\#\%\(\)\$\/\:áéíóú&ñ\;\¿\?\!\¡\+\-\*\=]/', '', $imput);
+        case 'email':
+            $healthy = trim(preg_replace('/[^0-9a-zA-Z_@.]/', '', $input)," ");
             return $healthy;
-
             break;
+
+        case 'txt':
+            $healthy = preg_replace('/[^a-z A-Z0-9@\'\"\.\,\#\%\(\)\$\/\:áéíóú&ñ\;\¿\?\!\¡\+\-\*\=]/', '', $input);
+            return $healthy;
+            break;
+
+        case null:
+            return $input;
 
     }
 
-    return false;
+    return true;
+
 }
+
+include_once('includes/encrypt-decrypt.php');
 
 # Sizes
 # 369 * 237
@@ -321,3 +431,8 @@ add_image_size('eventsFrame', 344, 238, true);
 
 add_image_size('newsThumb', 182, 141, true);
 add_image_size('galleryThumb', 142, 142, true);
+
+add_image_size('singleEntry', 680, 270, true);
+
+add_image_size('djThumb', 120, 120, true);
+

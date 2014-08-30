@@ -1,4 +1,4 @@
-<section id="contacto" class="container pageSection">
+<section id="contacto" class="container pageSection" data-slug="contacto">
     <div class="grid_12">
         <?php
         query_posts(array(
@@ -13,12 +13,14 @@
                     the_title( '<h2>', '</h2>' );
                     the_content();
                 ?>
-                <div class="grid_7 contactBlock">
-                    <form id="mainContact" class="contactForm grid_8" action="/contact-processor">
-                        <input type="text" name="nombre" placeholder="Nombre Completo" required="required" class="textInput"/>
+                <div class="grid_7 md_grid_11 contactBlock">
+                    <form id="mainContact" class="contactForm grid_8 sm_grid_12" action="/contact-processor">
+                        <div class="alert"></div>
+                        <input type="text" name="nombre" placeholder="Nombre Completo" required="required" class="textInput name"/>
                         <input type="text" name="correo" placeholder="Correo" required="required" class="textInput"/>
                         <input type="text" name="tema" placeholder="Tema" required="required" class="textInput"/>
                         <textarea name="mensaje" placeholder="Mensaje" cols="30" rows="10" class="textInput" required="required"></textarea>
+                        <input type="hidden" name="token" value=""/>
                         <input type="submit" class="contactBtn" value="Enviar"/>
                     </form>
                     <div class="grid_5 contactDetails">
@@ -37,7 +39,7 @@
 
                     </div>
                 </div>
-                <div class="grid_4 contactBlock right">
+                <div class="grid_4 md_grid_0 contactBlock right">
                     <figure>
                         <?php the_post_thumbnail(); ?>
                     </figure>
